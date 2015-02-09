@@ -2,6 +2,7 @@ package com.studiopresent.eventsapp;
 
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
 
         holder.vTitle.setText(ei.title);
         holder.vSTartDate.setText(ei.startDate);
+        holder.rlayout.setId(ei.eventId);
+        holder.rlayout.setOnClickListener(ei.onClickListener);
         holder.rlayout.setBackgroundDrawable(ei.img);
 
     }
