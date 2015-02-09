@@ -62,48 +62,15 @@ public class JSONPuller {
     public void readAndParseJSON(String in) {
         try {
             JSONObject reader = new JSONObject(in);
-
             nodes = reader.getJSONArray("nodes");
-
             JSONObject jRealObj = nodes.getJSONObject(i);
-
             JSONObject j2 = jRealObj.getJSONObject("node");
-
             jTitle = j2.getString("title");
-
             jStartDate = j2.getString("Start Date");
-
-            JSONObject imgobj = j2.getJSONObject("Image");
-
-
+            JSONObject imgobj = j2.getJSONObject("Image hdpi");
             jImgSrc = imgobj.getString("src");
-
-
             Bitmap myImage = getBitmapFromURL(jImgSrc);
-
-            //RelativeLayout rLayout=(RelativeLayout)findViewById(R.id.relativeLayout);
-
-            //BitmapDrawable(obj) convert Bitmap object into drawable object.
             img = new BitmapDrawable(myImage);
-            // rLayout.setBackgroundDrawable(dr);
-
-
-
-
-
-
-            /*
-
-            JSONObject sys  = reader.getJSONObject("sys");
-            jTitle = sys.getString("jTitle");
-
-            JSONObject main  = reader.getJSONObject("main");
-            jStartDate = main.getString("temp");
-
-            jImgSrc = main.getString("jImgSrc");
-            humidity = main.getString("humidity");
-
-*/
             parsingComplete = false;
 
 
