@@ -1,5 +1,6 @@
 package com.studiopresent.eventsapp;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,7 +9,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +74,7 @@ public class MainActivity extends ActionBarActivity {
                     Log.v("openEvent", String.valueOf(v.getId()));
                     openEvent(v.getId());
                 }};
+
             result.add(ei);
 
         }
@@ -82,10 +83,14 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-
+    // TODO send all the data to the other obj
     // This function opens the new Activity
     public void openEvent(int index) {
-
+        Intent intent = new Intent(this, DetailsActivity.class);
+        intent.putExtra("INDEX", Integer.toString(index));
+        intent.putExtra("TITLE", events.get(index).title);
+        intent.putExtra("STARTDATE", events.get(index).startDate);
+        startActivity(intent);
 
     }
 
