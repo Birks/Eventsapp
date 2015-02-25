@@ -35,6 +35,8 @@ public class DetailsActivity extends ActionBarActivity {
     }
 
 
+
+    // This part is only required for a later use. Not functional yet.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

@@ -69,6 +69,7 @@ public class MainActivity extends ActionBarActivity {
             ei.eventId=i;
 
             // OnlClickListener added for the dynamic rlayout onClick function
+            // An ID is given to every card, and at onlcick the detailsactivity is opened with a given ID
             ei.onClickListener = new View.OnClickListener() {
                 public void onClick(View v) {
                     Log.v("openEvent", String.valueOf(v.getId()));
@@ -86,7 +87,10 @@ public class MainActivity extends ActionBarActivity {
     // TODO send all the data to the other obj
     // This function opens the new Activity
     public void openEvent(int index) {
+        // Packing the event data in the intent
         Intent intent = new Intent(this, DetailsActivity.class);
+
+        // This index is just temporary used.
         intent.putExtra("INDEX", Integer.toString(index));
         intent.putExtra("TITLE", events.get(index).title);
         intent.putExtra("STARTDATE", events.get(index).startDate);

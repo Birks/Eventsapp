@@ -29,11 +29,10 @@ public class JSONPuller {
     private JSONArray nodes;
     private int i;
 
-
-    
-
     public volatile boolean parsingComplete = true;
 
+
+    // The URL of the json code. i = the index of the event in the json array.
     public JSONPuller(int i) {
         this.urlString = "http://development.studiopresent.info/eventsapp/get-data/json";
         this.i = i;
