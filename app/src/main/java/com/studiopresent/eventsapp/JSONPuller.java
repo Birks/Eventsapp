@@ -65,8 +65,8 @@ public class JSONPuller {
             JSONObject jRealObj = nodes.getJSONObject(i);
             JSONObject j2 = jRealObj.getJSONObject("node");
             jTitle = j2.getString("title");
-            jStartDate = j2.getString("Start Date");
-            JSONObject imgobj = j2.getJSONObject("Image hdpi");
+            jStartDate = j2.getString("startDate");
+            JSONObject imgobj = j2.getJSONObject("imageHdpi");
             jImgSrc = imgobj.getString("src");
             Bitmap myImage = getBitmapFromURL(jImgSrc);
             img = new BitmapDrawable(myImage);
