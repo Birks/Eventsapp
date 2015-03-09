@@ -32,6 +32,14 @@ public class DetailsActivity extends ActionBarActivity {
         textView = (TextView) findViewById(R.id.det_startdate);
         textView.setText(message);
 
+        message = intent.getStringExtra("ENDDATE");
+        textView = (TextView) findViewById(R.id.det_enddate);
+        textView.setText(message);
+
+        message = intent.getStringExtra("BODY");
+        textView = (TextView) findViewById(R.id.det_body);
+        textView.setText(message);
+
     }
 
 

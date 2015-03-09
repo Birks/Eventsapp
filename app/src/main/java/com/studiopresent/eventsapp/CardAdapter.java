@@ -46,9 +46,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
 
         holder.vTitle.setText(ei.title);
         holder.vSTartDate.setText(ei.startDate);
-        holder.rlayout.setId(ei.eventId);
+        holder.rlayout.setId(ei.id);
         holder.rlayout.setOnClickListener(ei.onClickListener);
-        holder.rlayout.setBackgroundDrawable(ei.img);
+        holder.rlayout.setBackgroundDrawable(ei.imageHdpi);
 
     }
 

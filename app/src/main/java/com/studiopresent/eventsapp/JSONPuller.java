@@ -21,11 +21,14 @@ import java.net.URL;
 
 public class JSONPuller {
 
+    private int jNid;
     private String jTitle;
     private String jStartDate;
+    private String jEndDate;
+    private String jBody;
     private String jImgSrc;
     private String urlString = null;
-    private Drawable img;
+    private Drawable imageHdpi;
     private JSONArray nodes;
     private int i;
 
@@ -38,6 +41,10 @@ public class JSONPuller {
         this.i = i;
     }
 
+    public int getjNid() {
+        return jNid;
+    }
+
     public String getjTitle() {
         return jTitle;
     }
@@ -46,12 +53,21 @@ public class JSONPuller {
         return jStartDate;
     }
 
+    public String getjEndDate() {
+        return jEndDate;
+    }
+
     public String getjImgSrc() {
         return jImgSrc;
     }
 
-    public Drawable getImg() {
-        return img;
+    public String getjBody() {
+        return jBody;
+    }
+
+
+    public Drawable getImageHdpi() {
+        return imageHdpi;
     }
 
     public JSONArray getNodes() {return nodes; }
@@ -64,12 +80,20 @@ public class JSONPuller {
             nodes = reader.getJSONArray("nodes");
             JSONObject jRealObj = nodes.getJSONObject(i);
             JSONObject j2 = jRealObj.getJSONObject("node");
+
+            // JSON Data main part
+            //jNid=j2.getInt("JSONid");
             jTitle = j2.getString("title");
             jStartDate = j2.getString("startDate");
+            jEndDate = j2.getString("endDate");
+            jBody=j2.getString("body");
+
+
+
             JSONObject imgobj = j2.getJSONObject("imageHdpi");
             jImgSrc = imgobj.getString("src");
             Bitmap myImage = getBitmapFromURL(jImgSrc);
-            img = new BitmapDrawable(myImage);
+            imageHdpi = new BitmapDrawable(myImage);
             parsingComplete = false;
 
 

@@ -65,8 +65,10 @@ public class MainActivity extends ActionBarActivity {
             EventInfo ei = new EventInfo();
             ei.title= obj.getjTitle();
             ei.startDate=obj.getjStartDate();
-            ei.img=obj.getImg();
-            ei.eventId=i;
+            ei.endDate=obj.getjEndDate();
+            ei.imageHdpi =obj.getImageHdpi();
+            ei.id=i;
+            ei.body=obj.getjBody();
 
             // OnlClickListener added for the dynamic rlayout onClick function
             // An ID is given to every card, and at onlcick the detailsactivity is opened with a given ID
@@ -94,6 +96,8 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra("INDEX", Integer.toString(index));
         intent.putExtra("TITLE", events.get(index).title);
         intent.putExtra("STARTDATE", events.get(index).startDate);
+        intent.putExtra("ENDDATE", events.get(index).endDate);
+        intent.putExtra("BODY", events.get(index).body);
         startActivity(intent);
 
     }

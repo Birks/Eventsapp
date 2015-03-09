@@ -10,10 +10,20 @@ import android.view.View;
 public class EventInfo {
 
     // TODO: not containing the full data yet
-    protected int eventId;
+    protected int id;
+    protected int nid;
     protected View.OnClickListener onClickListener;
     protected String title;
     protected String startDate;
-    protected Drawable img;
+    protected String endDate;
+    protected String postDate;
+    protected String updatedDate;
+    protected String body;
+    protected String city;
+    protected double latitude;
+    protected double longitude;
+    protected String name;
+    protected String street;
+    protected Drawable imageHdpi;
 
 }
