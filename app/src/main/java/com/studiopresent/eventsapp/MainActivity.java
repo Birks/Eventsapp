@@ -1,6 +1,8 @@
 package com.studiopresent.eventsapp;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,26 +21,18 @@ public class MainActivity extends ActionBarActivity {
     JSONPuller obj;
     List<EventInfo> events;
 
+    //A ProgressDialog object
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.card_list);
+        // Everything from the onCreate method moved to the AsyncTasks onPostExecute method
 
-        // use this setting to improve performance if you know that changes
-        mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        LinearLayoutManager mlinearLayoutManager = new LinearLayoutManager(this);
-        mlinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        mRecyclerView.setLayoutManager(mlinearLayoutManager);
-
-        // specify an adapter
-        events=createList();
-        CardAdapter ca = new CardAdapter(events);
-        mRecyclerView.setAdapter(ca);
-
+        // Calling hte AsyncTask
+        new LoadViewTask().execute();
     }
 
     private List<EventInfo> createList() {
@@ -86,6 +80,89 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    // To use the AsyncTask, it must be subclassed
+    private class LoadViewTask extends AsyncTask<Void, Integer, Void>
+    {
+        // Before running code in the separate thread
+        @Override
+        protected void onPreExecute()
+        {
+            // Create a new progress dialog
+            progressDialog = new ProgressDialog(MainActivity.this);
+            // Set the progress dialog spinner progress bar
+            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            // Set the dialog title to 'Loading...'
+            progressDialog.setTitle("Loading...");
+            // Set the dialog message to 'Loading application View, please wait...'
+            progressDialog.setMessage("Loading application, please wait...");
+            // This dialog can't be canceled by pressing the back key
+            progressDialog.setCancelable(false);
+            // This dialog isn't indeterminate
+            progressDialog.setIndeterminate(false);
+            // The maximum number of items is 100
+            progressDialog.setMax(100);
+            // Set the current progress to zero
+            progressDialog.setProgress(0);
+            // Display the progress dialog
+            progressDialog.show();
+        }
+
+        // The code to be executed in a background thread.
+        @Override
+        protected Void doInBackground(Void... params)
+        {
+			/* This is the part where the JSON parsing called, and this part
+			 * fills the List<EventInfo> events with event objects
+			 */
+                //Get the current thread's token
+                synchronized (this)
+                {
+
+                    events=createList();
+                    // This ends the spinner
+                    publishProgress(100);
+                }
+
+            return null;
+        }
+
+        // Update the progress
+        @Override
+        protected void onProgressUpdate(Integer... values)
+        {
+            // set the current progress of the progress dialog
+            progressDialog.setProgress(values[0]);
+        }
+
+        // after executing the code in the thread
+        @Override
+        protected void onPostExecute(Void result)
+        {
+            // close the progress dialog
+            progressDialog.dismiss();
+
+            // The onCreate part.
+            setContentView(R.layout.activity_main);
+            // initialize the View
+            RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.card_list);
+
+            // use this setting to improve performance if you know that changes
+            mRecyclerView.setHasFixedSize(true);
+
+            // use a linear layout manager
+            LinearLayoutManager mlinearLayoutManager = new LinearLayoutManager(MainActivity.this);
+            mlinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            mRecyclerView.setLayoutManager(mlinearLayoutManager);
+
+            // specify an adapter
+            CardAdapter ca = new CardAdapter(events);
+            mRecyclerView.setAdapter(ca);
+
+        }
+    }
+
+
+
     // TODO send all the data to the other obj
     // This function opens the new Activity
     public void openEvent(int index) {
@@ -117,7 +194,7 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        // noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
