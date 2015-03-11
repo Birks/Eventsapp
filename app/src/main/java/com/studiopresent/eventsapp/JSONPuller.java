@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+import android.view.View;
+import android.widget.ListView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -13,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * JSON handler class which connects, fetch and parse the json data
@@ -21,84 +26,64 @@ import java.net.URL;
 
 public class JSONPuller {
 
-    private int jNid;
-    private String jTitle;
-    private String jStartDate;
-    private String jEndDate;
-    private String jBody;
-    private String jImgSrc;
     private String urlString = null;
-    private Drawable imageHdpi;
-    private JSONArray nodes;
-    private int i;
+    private List<EventInfo> events;
+    private MainActivity ma;
 
     public volatile boolean parsingComplete = true;
 
 
     // The URL of the json code. i = the index of the event in the json array.
-    public JSONPuller(int i) {
+    public JSONPuller(MainActivity ma) {
         this.urlString = "http://development.studiopresent.info/eventsapp/get-data/json";
-        this.i = i;
+        this.ma=ma;
+        events = new ArrayList<EventInfo>();
     }
 
-    public int getjNid() {
-        return jNid;
+    public List<EventInfo> getEvents() {
+       return events;
     }
-
-    public String getjTitle() {
-        return jTitle;
-    }
-
-    public String getjStartDate() {
-        return jStartDate;
-    }
-
-    public String getjEndDate() {
-        return jEndDate;
-    }
-
-    public String getjImgSrc() {
-        return jImgSrc;
-    }
-
-    public String getjBody() {
-        return jBody;
-    }
-
-
-    public Drawable getImageHdpi() {
-        return imageHdpi;
-    }
-
-    public JSONArray getNodes() {return nodes; }
-
 
     @SuppressLint("NewApi")
     public void readAndParseJSON(String in) {
         try {
             JSONObject reader = new JSONObject(in);
-            nodes = reader.getJSONArray("nodes");
-            JSONObject jRealObj = nodes.getJSONObject(i);
-            JSONObject j2 = jRealObj.getJSONObject("node");
+            JSONArray nodes = reader.getJSONArray("nodes");
 
-            // JSON Data main part
-            //jNid=j2.getInt("JSONid");
-            jTitle = j2.getString("title");
-            jStartDate = j2.getString("startDate");
-            jEndDate = j2.getString("endDate");
-            jBody=j2.getString("body");
+            // Array is needed to store multiple events
+            for (int i = 0; i < nodes.length(); i++) {
+                JSONObject jRealObj = nodes.getJSONObject(i);
+                JSONObject j2 = jRealObj.getJSONObject("node");
+
+                // JSON Data main part
+                EventInfo ei = new EventInfo();
+                ei.title = j2.getString("title");
+                Log.v("title",j2.getString("title"));
+                ei.startDate = j2.getString("startDate");
+                ei.endDate = j2.getString("endDate");
+                ei.body = j2.getString("body");
 
 
+                JSONObject imgobj = j2.getJSONObject("imageHdpi");
+                Bitmap myImage = getBitmapFromURL(imgobj.getString("src"));
+                ei.imageHdpi = new BitmapDrawable(myImage);
 
-            JSONObject imgobj = j2.getJSONObject("imageHdpi");
-            jImgSrc = imgobj.getString("src");
-            Bitmap myImage = getBitmapFromURL(jImgSrc);
-            imageHdpi = new BitmapDrawable(myImage);
+                // OnlClickListener added for the dynamic rlayout onClick function
+                // An ID is given to every card, and at onlcick the DetailsActivity is opened with a given ID
+                ei.onClickListener = new View.OnClickListener() {
+                public void onClick(View v) {
+                    Log.v("openEvent", String.valueOf(v.getId()));
+                    ma.openEvent(v.getId());
+                }};
+
+                // Add the object to the event array
+                events.add(ei);
+
+            }
             parsingComplete = false;
 
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
@@ -136,9 +121,7 @@ public class JSONPuller {
                     // Starts the query
                     conn.connect();
                     InputStream stream = conn.getInputStream();
-
                     String data = convertStreamToString(stream);
-
                     readAndParseJSON(data);
                     stream.close();
 
