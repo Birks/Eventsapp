@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /* Details page for the event */
@@ -24,6 +25,7 @@ public class DetailsActivity extends ActionBarActivity {
         TextView textView = (TextView) findViewById(R.id.det_index);
         textView.setText(message);
 
+
         message = intent.getStringExtra("TITLE");
         textView = (TextView) findViewById(R.id.det_title);
         textView.setText(message);
@@ -39,6 +41,9 @@ public class DetailsActivity extends ActionBarActivity {
         message = intent.getStringExtra("BODY");
         textView = (TextView) findViewById(R.id.det_body);
         textView.setText(message);
+
+        message = intent.getStringExtra("IMAGE");
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 
     }
 

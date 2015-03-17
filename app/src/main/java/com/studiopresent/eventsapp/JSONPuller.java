@@ -62,7 +62,7 @@ public class JSONPuller {
                 ei.startDate = j2.getString("startDate");
                 ei.endDate = j2.getString("endDate");
                 ei.body = j2.getString("body");
-
+                ei.id=i;
 
                 JSONObject imgobj = j2.getJSONObject("imageHdpi");
                 Bitmap myImage = getBitmapFromURL(imgobj.getString("src"));
@@ -102,7 +102,6 @@ public class JSONPuller {
             e.printStackTrace();
             return null;
         }
-
     }
 
 

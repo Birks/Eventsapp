@@ -2,6 +2,7 @@ package com.studiopresent.eventsapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -136,6 +137,10 @@ public class MainActivity extends ActionBarActivity {
 
         // This index is just temporary used.
         intent.putExtra("INDEX", Integer.toString(index));
+
+        Drawable drw = events.get(index).imageHdpi;
+        Log.v("image", String.valueOf(drw));
+        intent.putExtra("IMAGE", String.valueOf(drw));
         intent.putExtra("TITLE", events.get(index).title);
         intent.putExtra("STARTDATE", events.get(index).startDate);
         intent.putExtra("ENDDATE", events.get(index).endDate);
