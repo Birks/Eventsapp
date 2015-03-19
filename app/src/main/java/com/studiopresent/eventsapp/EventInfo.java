@@ -21,8 +21,8 @@ public class EventInfo {
     protected String updatedDate;
     protected String body;
     protected String city;
-    protected double latitude;
-    protected double longitude;
+    protected String latitude;
+    protected String longitude;
     protected String name;
     protected String street;
     protected Drawable imageHdpi;

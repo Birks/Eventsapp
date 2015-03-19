@@ -140,21 +140,23 @@ public class MainActivity extends ActionBarActivity {
 
         // This index is just temporary used.
         intent.putExtra("INDEX", Integer.toString(index));
+
+        // Image intent
         Bitmap bitmap = events.get(index).imageBitmap;
-        Log.v("bitmap", "bitmap lekerve");
+        Log.v("bitmap", "bitmap created");
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Log.v("bitmap", "stream letrehova");
+        Log.v("bitmap", "stream created");
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        Log.v("bitmap", "bitmap comp");
+        Log.v("bitmap", "bitmap comppress format");
         byte[] byteArray = stream.toByteArray();
-        Log.v("bitmap", "byte tomb letrehova");
+        Log.v("bitmap", "byte array created");
         intent.putExtra("BITMAP", byteArray);
-        Log.v("bitmap", "BITMAP intent kuldve");
+        Log.v("bitmap", "BITMAP send with intent");
 
 
         intent.putExtra("TITLE", events.get(index).title);
         intent.putExtra("STARTDATE", events.get(index).startDate);
-        intent.putExtra("ENDDATE", events.get(index).endDate);
+        intent.putExtra("NAME", events.get(index).name);
         intent.putExtra("BODY", events.get(index).body);
         startActivity(intent);
 

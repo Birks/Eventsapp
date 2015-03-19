@@ -38,24 +38,30 @@ public class DetailsActivity extends ActionBarActivity {
         textView = (TextView) findViewById(R.id.det_startdate);
         textView.setText(message);
 
-        message = intent.getStringExtra("ENDDATE");
+        /*message = intent.getStringExtra("ENDDATE");
         textView = (TextView) findViewById(R.id.det_enddate);
-        textView.setText(message);
+        textView.setText(message);*/
 
         message = intent.getStringExtra("BODY");
         textView = (TextView) findViewById(R.id.det_body);
         textView.setText(message);
 
+        // IMAGE
         byte[] byteArray = getIntent().getByteArrayExtra("BITMAP");
-        Log.v("bitmap", "intent fogadva");
+        Log.v("bitmap", "receive BITMAP intent");
         Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-        Log.v("bitmap", "bitmap fact");
-        ImageView imageView = (ImageView)findViewById(R.id.det_image);
-        Log.v("bitmap", "imageview letrehova");
+        Log.v("bitmap", "bitmap factory");
+        ImageView imageView = (ImageView) findViewById(R.id.det_image);
+        Log.v("bitmap", "imageview initialized");
         imageView.setImageBitmap(bitmap);
-        Log.v("bitmap", "bitmap felrakva");
-    }
+        Log.v("bitmap", "bitmap added imageview");
 
+        // NAME(Korzo)
+        message = intent.getStringExtra("NAME");
+        textView = (TextView) findViewById(R.id.det_name);
+        textView.setText(message);
+
+    }
 
 
     // This part is only required for a later use. Not functional yet.
