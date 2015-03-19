@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -36,12 +38,12 @@ public class JSONPuller {
     // The URL of the json code. i = the index of the event in the json array.
     public JSONPuller(MainActivity ma) {
         this.urlString = "http://development.studiopresent.info/eventsapp/get-data/json";
-        this.ma=ma;
+        this.ma = ma;
         events = new ArrayList<EventInfo>();
     }
 
     public List<EventInfo> getEvents() {
-       return events;
+        return events;
     }
 
     @SuppressLint("NewApi")
@@ -58,25 +60,29 @@ public class JSONPuller {
                 // JSON Data main part
                 EventInfo ei = new EventInfo();
                 ei.title = j2.getString("title");
-                Log.v("title",j2.getString("title"));
+                Log.v("title", j2.getString("title"));
                 ei.startDate = j2.getString("startDate");
                 ei.endDate = j2.getString("endDate");
                 ei.body = j2.getString("body");
                 ei.name = j2.getString("name");
-                ei.id=i;
+                ei.id = i;
 
                 JSONObject imgobj = j2.getJSONObject("imageHdpi");
-                Bitmap myImage = getBitmapFromURL(imgobj.getString("src"));
-                ei.imageHdpi = new BitmapDrawable(myImage);
-                ei.imageBitmap = myImage;
+                ei.imageBitmap = Picasso.with(ma).load(imgobj.getString("src")).get();
+                ei.imageHdpi = new BitmapDrawable(ei.imageBitmap);
+
+//                Bitmap myImage = getBitmapFromURL(imgobj.getString("src"));
+//                ei.imageHdpi = new BitmapDrawable(myImage);
+//                ei.imageBitmap = myImage;
 
                 // OnlClickListener added for the dynamic rlayout onClick function
                 // An ID is given to every card, and at onlcick the DetailsActivity is opened with a given ID
                 ei.onClickListener = new View.OnClickListener() {
-                public void onClick(View v) {
-                    Log.v("openEvent", String.valueOf(v.getId()));
-                    ma.openEvent(v.getId());
-                }};
+                    public void onClick(View v) {
+                        Log.v("openEvent", String.valueOf(v.getId()));
+                        ma.openEvent(v.getId());
+                    }
+                };
 
                 // Add the object to the event array
                 events.add(ei);
@@ -92,24 +98,24 @@ public class JSONPuller {
     }
 
     // Needed for the background image
-    public Bitmap getBitmapFromURL(String imageUrl) {
-        try {
-            URL url = new URL(imageUrl);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            return BitmapFactory.decodeStream(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+//    public Bitmap getBitmapFromURL(String imageUrl) {
+//        try {
+//            URL url = new URL(imageUrl);
+//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//            connection.setDoInput(true);
+//            connection.connect();
+//            InputStream input = connection.getInputStream();
+//            return BitmapFactory.decodeStream(input);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
 
 
     // This part connects and downloads the JSON data
-    public void fetchJSON(){
-        Thread thread = new Thread(new Runnable(){
+    public void fetchJSON() {
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -134,6 +140,7 @@ public class JSONPuller {
 
         thread.start();
     }
+
     static String convertStreamToString(InputStream is) {
         java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
         return s.hasNext() ? s.next() : "";
