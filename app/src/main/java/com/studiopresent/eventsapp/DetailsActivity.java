@@ -1,10 +1,14 @@
 package com.studiopresent.eventsapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,8 +26,8 @@ public class DetailsActivity extends ActionBarActivity {
 
         //TODO optimise this part
         // Create the text view
-        TextView textView = (TextView) findViewById(R.id.det_index);
-        textView.setText(message);
+        TextView textView;// = (TextView) findViewById(R.id.det_index);
+        //textView.setText(message);
 
 
         message = intent.getStringExtra("TITLE");
@@ -42,9 +46,14 @@ public class DetailsActivity extends ActionBarActivity {
         textView = (TextView) findViewById(R.id.det_body);
         textView.setText(message);
 
-        message = intent.getStringExtra("IMAGE");
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
+        byte[] byteArray = getIntent().getByteArrayExtra("BITMAP");
+        Log.v("bitmap", "intent fogadva");
+        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+        Log.v("bitmap", "bitmap fact");
+        ImageView imageView = (ImageView)findViewById(R.id.det_image);
+        Log.v("bitmap", "imageview letrehova");
+        imageView.setImageBitmap(bitmap);
+        Log.v("bitmap", "bitmap felrakva");
     }
 
 

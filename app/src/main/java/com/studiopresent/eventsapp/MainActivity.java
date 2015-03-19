@@ -2,6 +2,7 @@ package com.studiopresent.eventsapp;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
@@ -13,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,10 +140,18 @@ public class MainActivity extends ActionBarActivity {
 
         // This index is just temporary used.
         intent.putExtra("INDEX", Integer.toString(index));
+        Bitmap bitmap = events.get(index).imageBitmap;
+        Log.v("bitmap", "bitmap lekerve");
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        Log.v("bitmap", "stream letrehova");
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        Log.v("bitmap", "bitmap comp");
+        byte[] byteArray = stream.toByteArray();
+        Log.v("bitmap", "byte tomb letrehova");
+        intent.putExtra("BITMAP", byteArray);
+        Log.v("bitmap", "BITMAP intent kuldve");
 
-        Drawable drw = events.get(index).imageHdpi;
-        Log.v("image", String.valueOf(drw));
-        intent.putExtra("IMAGE", String.valueOf(drw));
+
         intent.putExtra("TITLE", events.get(index).title);
         intent.putExtra("STARTDATE", events.get(index).startDate);
         intent.putExtra("ENDDATE", events.get(index).endDate);

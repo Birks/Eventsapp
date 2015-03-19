@@ -67,6 +67,7 @@ public class JSONPuller {
                 JSONObject imgobj = j2.getJSONObject("imageHdpi");
                 Bitmap myImage = getBitmapFromURL(imgobj.getString("src"));
                 ei.imageHdpi = new BitmapDrawable(myImage);
+                ei.imageBitmap = myImage;
 
                 // OnlClickListener added for the dynamic rlayout onClick function
                 // An ID is given to every card, and at onlcick the DetailsActivity is opened with a given ID

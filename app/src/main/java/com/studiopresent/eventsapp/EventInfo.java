@@ -1,5 +1,6 @@
 package com.studiopresent.eventsapp;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
@@ -25,5 +26,5 @@ public class EventInfo {
     protected String name;
     protected String street;
     protected Drawable imageHdpi;
-
+    protected Bitmap imageBitmap;
 }
