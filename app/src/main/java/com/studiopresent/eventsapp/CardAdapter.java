@@ -45,6 +45,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
         EventInfo ei = eventsList.get(i);
 
         holder.vTitle.setText(ei.title);
+        holder.vName.setText(ei.name);
         holder.vSTartDate.setText(ei.startDate);
         holder.rlayout.setId(ei.id);
         holder.rlayout.setOnClickListener(ei.onClickListener);
@@ -64,13 +65,14 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
     public static class EventCardHolder extends RecyclerView.ViewHolder {
 
         protected TextView vTitle;
-        protected TextView vSTartDate;
+        protected TextView vSTartDate, vName;
         protected RelativeLayout rlayout; // this needed for the background change
 
         public EventCardHolder(View v) {
             super(v);
             vTitle = (TextView) v.findViewById(R.id.txt_title);
             vSTartDate = (TextView) v.findViewById(R.id.txt_startDate);
+            vName = (TextView)v.findViewById(R.id.txt_name);
             rlayout = (RelativeLayout) v.findViewById(R.id.card_rlayout);
         }
     }
