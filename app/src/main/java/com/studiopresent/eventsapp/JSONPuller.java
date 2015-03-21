@@ -65,6 +65,12 @@ public class JSONPuller {
                 ei.endDate = j2.getString("endDate");
                 ei.body = j2.getString("body");
                 ei.name = j2.getString("name");
+
+                ei.city = j2.getString("city");
+                ei.street = j2.getString("street");
+                ei.latitude =  j2.getString("latitude");
+                ei.longitude = j2.getString("longitude");
+
                 ei.id = i;
 
                 JSONObject imgobj = j2.getJSONObject("imageHdpi");

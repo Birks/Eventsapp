@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -49,7 +50,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
         holder.vSTartDate.setText(ei.startDate);
         holder.rlayout.setId(ei.id);
         holder.rlayout.setOnClickListener(ei.onClickListener);
-        holder.rlayout.setBackgroundDrawable(ei.imageHdpi);
+        holder.vImage.setImageDrawable(ei.imageHdpi);
 
     }
 
@@ -66,6 +67,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
 
         protected TextView vTitle;
         protected TextView vSTartDate, vName;
+        protected ImageView vImage;
         protected RelativeLayout rlayout; // this needed for the background change
 
         public EventCardHolder(View v) {
@@ -73,6 +75,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
             vTitle = (TextView) v.findViewById(R.id.txt_title);
             vSTartDate = (TextView) v.findViewById(R.id.txt_startDate);
             vName = (TextView)v.findViewById(R.id.txt_name);
+            vImage = (ImageView)v.findViewById(R.id.image);
             rlayout = (RelativeLayout) v.findViewById(R.id.card_rlayout);
         }
     }

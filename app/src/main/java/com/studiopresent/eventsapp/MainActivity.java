@@ -158,6 +158,12 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra("STARTDATE", events.get(index).startDate);
         intent.putExtra("NAME", events.get(index).name);
         intent.putExtra("BODY", events.get(index).body);
+
+        intent.putExtra("CITY", events.get(index).city);
+        intent.putExtra("STREET", events.get(index).street);
+
+        String GPS = events.get(index).latitude + ", " + events.get(index).longitude;
+        intent.putExtra("GPS", GPS);
         startActivity(intent);
 
     }

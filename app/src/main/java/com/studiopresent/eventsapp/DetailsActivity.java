@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,8 +63,23 @@ public class DetailsActivity extends ActionBarActivity {
         textView = (TextView) findViewById(R.id.det_name);
         textView.setText(message);
 
+        // CITY, STREET, GPS
+        message = intent.getStringExtra("CITY");
+        textView = (TextView) findViewById(R.id.det_city);
+        textView.setText("Grad: "+message);
+
+        message = intent.getStringExtra("STREET");
+        textView = (TextView) findViewById(R.id.det_street);
+        textView.setText("Ulica: "+message);
+
+        message = intent.getStringExtra("GPS");
+        textView = (TextView) findViewById(R.id.det_GPS);
+        textView.setText("GPS: "+message);
     }
 
+    public void Back(View v){
+        onBackPressed();
+    }
 
     // This part is only required for a later use. Not functional yet.
     @Override
