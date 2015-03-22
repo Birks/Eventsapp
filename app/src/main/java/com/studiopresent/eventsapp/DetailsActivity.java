@@ -3,26 +3,49 @@ package com.studiopresent.eventsapp;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
+
+import com.squareup.picasso.Picasso;
 
 
 /* Details page for the event */
 
 public class DetailsActivity extends ActionBarActivity {
 
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
+
+        // Back button
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
         Intent intent = getIntent();
         String message = intent.getStringExtra("INDEX");
 
@@ -66,18 +89,35 @@ public class DetailsActivity extends ActionBarActivity {
         // CITY, STREET, GPS
         message = intent.getStringExtra("CITY");
         textView = (TextView) findViewById(R.id.det_city);
-        textView.setText("Grad: "+message);
+        textView.setText("Grad: " + message);
 
         message = intent.getStringExtra("STREET");
         textView = (TextView) findViewById(R.id.det_street);
-        textView.setText("Ulica: "+message);
+        textView.setText("Ulica: " + message);
 
         message = intent.getStringExtra("GPS");
         textView = (TextView) findViewById(R.id.det_GPS);
-        textView.setText("GPS: "+message);
+        textView.setText("GPS: " + message);
+
+        // Needed for the size of the map
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        String defaultMap = "http://maps.google.com/maps/api/staticmap?center=";
+        String defaultMap2 = "&zoom=16&size=" + Integer.toString((int) Math.floor(metrics.widthPixels * 0.895)) + "x" +
+                Integer.toString((int) Math.floor(metrics.widthPixels * 0.46)) + "&sensor=false&markers=";
+        String coord = "";
+        message = intent.getStringExtra("LATITUDE");
+        coord += message + "%2C";
+        message = intent.getStringExtra("LONGITUDE");
+        coord += message;
+        defaultMap += coord + defaultMap2 + coord;
+        Log.v("coord", defaultMap + defaultMap2);
+        ImageView detMap = (ImageView) findViewById(R.id.det_map);
+        Picasso.with(this).load(defaultMap).placeholder(R.drawable.ic_file_download_white_48dp).into(detMap);
     }
 
-    public void Back(View v){
+    public void Back(View v) {
         onBackPressed();
     }
 
@@ -96,10 +136,19 @@ public class DetailsActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.homeAsUp) {
+            Log.v("backbutton", "R.id.homeasyp");
+            finish();
+            //NavUtils.navigateUpFromSameTask(this);
             return true;
         }
+
+        if (id == R.id.home) {
+            Log.v("backbutton", "R.id.home");
+        }
+
 
         return super.onOptionsItemSelected(item);
     }

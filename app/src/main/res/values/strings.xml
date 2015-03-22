@@ -4,6 +4,7 @@
     <string name="app_name">Eventsapp</string>
     <string name="action_settings">Settings</string>
     <string name="temp_string">Lorem ipsum</string>
-    <string name="title_activity_details">DetailsActivity</string>
+    <string name="title_activity_details"></string>
+    <string name="static_map">Static map</string>
 
 </resources>
