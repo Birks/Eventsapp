@@ -128,6 +128,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/temp_string"
                 android:id="@+id/det_GPS" />
+            <ImageView
+                android:layout_below="@+id/det_GPS"
+                android:id="@+id/det_map"
+                android:src="@drawable/ic_launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
     </RelativeLayout>

@@ -14,10 +14,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 
 /* Details page for the event */
 
 public class DetailsActivity extends ActionBarActivity {
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +29,6 @@ public class DetailsActivity extends ActionBarActivity {
         setContentView(R.layout.activity_details);
         Intent intent = getIntent();
         String message = intent.getStringExtra("INDEX");
-
         //TODO optimise this part
         // Create the text view
         TextView textView;// = (TextView) findViewById(R.id.det_index);
@@ -75,6 +78,19 @@ public class DetailsActivity extends ActionBarActivity {
         message = intent.getStringExtra("GPS");
         textView = (TextView) findViewById(R.id.det_GPS);
         textView.setText("GPS: "+message);
+        String defaultMap = "http://maps.google.com/maps/api/staticmap?center=";
+        String defaultMap2 = "&zoom=16&size=400x230&sensor=false&markers=";
+
+
+        String coord = "";
+        message = intent.getStringExtra("LATITUDE");
+        coord += message + "%2C";
+        message = intent.getStringExtra("LONGITUDE");
+        coord += message;
+        defaultMap += coord + defaultMap2 + coord;
+        Log.v("coord", defaultMap);
+        ImageView detMap = (ImageView) findViewById(R.id.det_map);
+        Picasso.with(this).load(defaultMap).placeholder(R.drawable.ic_file_download_white_48dp).into(detMap);
     }
 
     public void Back(View v){

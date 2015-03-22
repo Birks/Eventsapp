@@ -154,7 +154,8 @@ public class MainActivity extends ActionBarActivity {
 
         intent.putExtra("CITY", events.get(index).city);
         intent.putExtra("STREET", events.get(index).street);
-
+        intent.putExtra("LATITUDE", events.get(index).latitude);
+        intent.putExtra("LONGITUDE", events.get(index).longitude);
         String GPS = events.get(index).latitude + ", " + events.get(index).longitude;
         intent.putExtra("GPS", GPS);
         startActivity(intent);
