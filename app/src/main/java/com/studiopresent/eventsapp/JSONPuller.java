@@ -68,14 +68,17 @@ public class JSONPuller {
 
                 ei.city = j2.getString("city");
                 ei.street = j2.getString("street");
-                ei.latitude =  j2.getString("latitude");
+                ei.latitude = j2.getString("latitude");
                 ei.longitude = j2.getString("longitude");
 
                 ei.id = i;
 
                 JSONObject imgobj = j2.getJSONObject("imageHdpi");
+                ei.imageSrc = imgobj.getString("src");
+                // Required for the DetailsActivity
                 ei.imageBitmap = Picasso.with(ma).load(imgobj.getString("src")).get();
-                ei.imageHdpi = new BitmapDrawable(ei.imageBitmap);
+
+//                ei.imageHdpi = new BitmapDrawable(ei.imageBitmap);
 
 //                Bitmap myImage = getBitmapFromURL(imgobj.getString("src"));
 //                ei.imageHdpi = new BitmapDrawable(myImage);

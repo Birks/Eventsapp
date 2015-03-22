@@ -17,8 +17,8 @@
             android:adjustViewBounds="true" />
 
         <Button
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:id="@+id/backButton"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
@@ -26,12 +26,6 @@
             android:background="@drawable/arrow_back"
             android:onClick="Back"/>
 
-        <!--<TextView
-            android:id="@+id/det_index"
-            android:layout_width="wrap_content"
-            android:layout_below="@+id/det_image"
-            android:layout_height="wrap_content"
-            android:text="@string/temp_string"/>-->
 
         <TextView
             android:id="@+id/det_title"

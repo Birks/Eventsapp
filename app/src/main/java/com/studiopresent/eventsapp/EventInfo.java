@@ -25,6 +25,7 @@ public class EventInfo {
     protected String longitude;
     protected String name;
     protected String street;
+    protected String imageSrc;
     protected Drawable imageHdpi;
     protected Bitmap imageBitmap;
 }

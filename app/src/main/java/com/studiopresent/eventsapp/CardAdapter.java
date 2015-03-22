@@ -1,6 +1,8 @@
 package com.studiopresent.eventsapp;
 
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -20,9 +24,11 @@ import java.util.List;
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolder> {
 
     private List<EventInfo> eventsList;
+    private Context context;
 
     // CardAdapter constructor
-    public CardAdapter(List<EventInfo> eventsList) {
+    public CardAdapter(List<EventInfo> eventsList, Context context) {
+        this.context = context;
         this.eventsList = eventsList;
     }
 
@@ -50,8 +56,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
         holder.vSTartDate.setText(ei.startDate);
         holder.rlayout.setId(ei.id);
         holder.rlayout.setOnClickListener(ei.onClickListener);
-        holder.vImage.setImageDrawable(ei.imageHdpi);
-
+        Picasso.with(context).load(ei.imageSrc).placeholder(R.drawable.ic_file_download_white_48dp).into(holder.vImage);
     }
 
 
@@ -74,8 +79,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
             super(v);
             vTitle = (TextView) v.findViewById(R.id.txt_title);
             vSTartDate = (TextView) v.findViewById(R.id.txt_startDate);
-            vName = (TextView)v.findViewById(R.id.txt_name);
-            vImage = (ImageView)v.findViewById(R.id.image);
+            vName = (TextView) v.findViewById(R.id.txt_name);
+            vImage = (ImageView) v.findViewById(R.id.image);
             rlayout = (RelativeLayout) v.findViewById(R.id.card_rlayout);
         }
     }

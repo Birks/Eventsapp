@@ -43,12 +43,10 @@ public class MainActivity extends ActionBarActivity {
 
 
     // To use the AsyncTask, it must be subclassed
-    private class LoadViewTask extends AsyncTask<Void, Integer, Void>
-    {
+    private class LoadViewTask extends AsyncTask<Void, Integer, Void> {
         // Before running code in the separate thread
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             // Create a new progress dialog
             progressDialog = new ProgressDialog(MainActivity.this);
             // Set the progress dialog spinner progress bar
@@ -71,42 +69,38 @@ public class MainActivity extends ActionBarActivity {
 
         // The code to be executed in a background thread.
         @Override
-        protected Void doInBackground(Void... params)
-        {
-			/* This is the part where the JSON parsing called, and this part
-			 * fills the List<EventInfo> events with event objects
+        protected Void doInBackground(Void... params) {
+            /* This is the part where the JSON parsing called, and this part
+             * fills the List<EventInfo> events with event objects
 			 */
-                //Get the current thread's token
-                synchronized (this)
-                {
-                    // Calling the JSON Pulling action
-                    obj.fetchJSON();
+            //Get the current thread's token
+            synchronized (this) {
+                // Calling the JSON Pulling action
+                obj.fetchJSON();
 
-                    // Delay until the parsing is completed
-                    while (obj.parsingComplete);
+                // Delay until the parsing is completed
+                while (obj.parsingComplete) ;
 
-                    // Getting the List<EventInfo> array
-                    events=obj.getEvents();
+                // Getting the List<EventInfo> array
+                events = obj.getEvents();
 
-                    // This ends the spinner
-                    publishProgress(100);
-                }
+                // This ends the spinner
+                publishProgress(100);
+            }
 
             return null;
         }
 
         // Update the progress
         @Override
-        protected void onProgressUpdate(Integer... values)
-        {
+        protected void onProgressUpdate(Integer... values) {
             // set the current progress of the progress dialog
             progressDialog.setProgress(values[0]);
         }
 
         // after executing the code in the thread
         @Override
-        protected void onPostExecute(Void result)
-        {
+        protected void onPostExecute(Void result) {
             // close the progress dialog
             progressDialog.dismiss();
 
@@ -124,12 +118,11 @@ public class MainActivity extends ActionBarActivity {
             mRecyclerView.setLayoutManager(mlinearLayoutManager);
 
             // specify an adapter
-            CardAdapter ca = new CardAdapter(events);
+            CardAdapter ca = new CardAdapter(events, getBaseContext());
             mRecyclerView.setAdapter(ca);
 
         }
     }
-
 
 
     // TODO send all the data to the other obj
