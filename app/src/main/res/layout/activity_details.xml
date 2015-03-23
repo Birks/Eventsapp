@@ -144,6 +144,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="8dp"
                     android:contentDescription="@string/static_map"
+                    android:onClick="showDialogActivityMap"
                     android:src="@drawable/ic_launcher" />
 
             </LinearLayout>

@@ -121,6 +121,11 @@ public class DetailsActivity extends ActionBarActivity {
         onBackPressed();
     }
 
+    public void showDialogActivityMap(View v) {
+        Intent intent=new Intent(getApplicationContext(), DialogActivityMap.class);
+        startActivity(intent);
+    }
+
     // This part is only required for a later use. Not functional yet.
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -135,20 +140,6 @@ public class DetailsActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.homeAsUp) {
-            Log.v("backbutton", "R.id.homeasyp");
-            finish();
-            //NavUtils.navigateUpFromSameTask(this);
-            return true;
-        }
-
-        if (id == R.id.home) {
-            Log.v("backbutton", "R.id.home");
-        }
-
 
         return super.onOptionsItemSelected(item);
     }

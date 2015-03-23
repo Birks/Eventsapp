@@ -6,5 +6,7 @@
     <string name="temp_string">Lorem ipsum</string>
     <string name="title_activity_details"></string>
     <string name="static_map">Static map</string>
+    <string name="title_activity_dialog_activity_map">DialogActivityMap</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
