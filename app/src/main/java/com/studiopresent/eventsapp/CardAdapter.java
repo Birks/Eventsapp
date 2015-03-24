@@ -1,9 +1,9 @@
 package com.studiopresent.eventsapp;
 
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +11,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
 
 
 /*
@@ -46,7 +48,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(EventCardHolder holder, int i) {
+    public void onBindViewHolder(final EventCardHolder holder, int i) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         EventInfo ei = eventsList.get(i);
@@ -56,7 +58,20 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
         holder.vSTartDate.setText(ei.startDate);
         holder.rlayout.setId(ei.id);
         holder.rlayout.setOnClickListener(ei.onClickListener);
-        Picasso.with(context).load(ei.imageSrc).placeholder(R.drawable.ic_file_download_white_48dp).into(holder.vImage);
+
+        // Shows the progressbar spinner until the image downloaded
+        Picasso.with(context).load(ei.imageSrc).noPlaceholder().into(holder.vImage, new Callback() {
+            @Override
+            public void onSuccess() {
+                // Hide the spinner
+                holder.vProgress.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError() {
+                Log.v("Picasso:", "Error");
+            }
+        });
     }
 
 
@@ -74,6 +89,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
         protected TextView vSTartDate, vName;
         protected ImageView vImage;
         protected RelativeLayout rlayout; // this needed for the background change
+        protected View vProgress;
 
         public EventCardHolder(View v) {
             super(v);
@@ -82,6 +98,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
             vName = (TextView) v.findViewById(R.id.txt_name);
             vImage = (ImageView) v.findViewById(R.id.image);
             rlayout = (RelativeLayout) v.findViewById(R.id.card_rlayout);
+            vProgress = v.findViewById(R.id.card_progressbar);
         }
     }
 }
