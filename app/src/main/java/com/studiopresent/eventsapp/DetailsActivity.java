@@ -25,6 +25,8 @@ import com.squareup.picasso.Picasso;
 public class DetailsActivity extends ActionBarActivity {
 
     private Toolbar toolbar;
+    private String lat, lng;
+    private Double latD, lngD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,13 +110,20 @@ public class DetailsActivity extends ActionBarActivity {
                 Integer.toString((int) Math.floor(metrics.widthPixels * 0.46)) + "&sensor=false&markers=";
         String coord = "";
         message = intent.getStringExtra("LATITUDE");
+        lat = intent.getStringExtra("LATITUDE");
+        latD = Double.parseDouble(lat);
+
+
         coord += message + "%2C";
         message = intent.getStringExtra("LONGITUDE");
+        lng = intent.getStringExtra("LONGITUDE");
+        lngD = Double.parseDouble(lng);
+
         coord += message;
         defaultMap += coord + defaultMap2 + coord;
         Log.v("coord", defaultMap + defaultMap2);
         ImageView detMap = (ImageView) findViewById(R.id.det_map);
-        Picasso.with(this).load(defaultMap).placeholder(R.drawable.ic_file_download_white_48dp).into(detMap);
+        Picasso.with(this).load(defaultMap).noPlaceholder().into(detMap);
     }
 
     public void Back(View v) {
@@ -123,6 +132,12 @@ public class DetailsActivity extends ActionBarActivity {
 
     public void showDialogActivityMap(View v) {
         Intent intent=new Intent(getApplicationContext(), DialogActivityMap.class);
+        Bundle b = new Bundle();
+        b.putDouble("LAT",latD);
+        intent.putExtras(b);
+        b.putDouble("LNG",lngD);
+        intent.putExtras(b);
+
         startActivity(intent);
     }
 

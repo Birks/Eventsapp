@@ -8,5 +8,6 @@
     <string name="static_map">Static map</string>
     <string name="title_activity_dialog_activity_map">DialogActivityMap</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_maps">Map</string>
 
 </resources>
