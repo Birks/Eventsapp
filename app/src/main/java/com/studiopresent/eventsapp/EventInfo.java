@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 
+import com.squareup.picasso.Picasso;
+
 /*
  *   This class contains the data which is displayed on the main screen
  */
@@ -28,4 +30,5 @@ public class EventInfo {
     protected String imageSrc;
     protected Drawable imageHdpi;
     protected Bitmap imageBitmap;
+    protected Picasso pic;
 }

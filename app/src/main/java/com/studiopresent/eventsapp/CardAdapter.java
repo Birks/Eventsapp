@@ -59,8 +59,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
         holder.rlayout.setId(ei.id);
         holder.rlayout.setOnClickListener(ei.onClickListener);
 
+        Picasso mPic = Picasso.with(context);
+        mPic.setIndicatorsEnabled(true);
+        mPic.setLoggingEnabled(true);
         // Shows the progressbar spinner until the image downloaded
-        Picasso.with(context).load(ei.imageSrc).noPlaceholder().into(holder.vImage, new Callback() {
+        mPic.load(ei.imageSrc).noPlaceholder().into(holder.vImage, new Callback() {
             @Override
             public void onSuccess() {
                 // Hide the spinner
