@@ -106,7 +106,8 @@ public class MainActivity extends ActionBarActivity {
                 while (obj.parsingComplete) ;
 
                 // Getting the List<EventInfo> array
-                events = obj.getEvents();
+                events = CalendarMaker.orderEvents(obj.getEvents());
+                //events=CalendarMaker.orderEvents(events);
 
                 // This ends the spinner
                 publishProgress(100);
@@ -158,7 +159,7 @@ public class MainActivity extends ActionBarActivity {
             // Delay until the parsing is completed
             while (obj.parsingComplete) ;
             // Getting the List<EventInfo> array
-            events = obj.getEvents();
+            events = CalendarMaker.orderEvents(obj.getEvents());
             // Load complete
             connectWithRecycleVIew();
         }
@@ -184,6 +185,7 @@ public class MainActivity extends ActionBarActivity {
 
     // When swipe refresh and first run ends
     public void connectWithRecycleVIew() {
+
         // initialize the View
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.card_list);
 
@@ -207,6 +209,7 @@ public class MainActivity extends ActionBarActivity {
         // Packing the event data in the intent
         Intent intent = new Intent(this, DetailsActivity.class);
 
+        Log.v("Intent", "Index: " + index);
         // This index is just temporary used.
         intent.putExtra("INDEX", Integer.toString(index));
 

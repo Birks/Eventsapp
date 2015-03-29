@@ -6,6 +6,8 @@ import android.view.View;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
+
 /*
  *   This class contains the data which is displayed on the main screen
  */
@@ -17,6 +19,7 @@ public class EventInfo {
     protected int nid;
     protected View.OnClickListener onClickListener;
     protected String title;
+    protected DateObject dStartDate;
     protected String startDate;
     protected String endDate;
     protected String postDate;

@@ -80,7 +80,10 @@ public class JSONPuller {
                 EventInfo ei = new EventInfo();
                 ei.title = j2.getString("title");
                 Log.v("title", j2.getString("title"));
-                ei.startDate = j2.getString("startDate");
+                //ei.startDate = j2.getString("startDate");
+                ei.dStartDate=CalendarMaker.generateFromString(j2.getString("startDate"));
+                ei.startDate=ei.dStartDate.getSerbianDateFormat();
+
                 ei.endDate = j2.getString("endDate");
                 ei.body = j2.getString("body");
                 ei.name = j2.getString("name");
