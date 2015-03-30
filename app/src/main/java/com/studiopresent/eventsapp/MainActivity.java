@@ -31,7 +31,7 @@ public class MainActivity extends ActionBarActivity {
     FileSaveMethods fileManager;
 
     //A ProgressDialog object
-    private ProgressDialog progressDialog;
+    //private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +42,11 @@ public class MainActivity extends ActionBarActivity {
         // Instantiation of the JSONPuller object
         obj = new JSONPuller(this, getBaseContext());
 
-        // Initialize filemanager
+        // Initialize file manager
         fileManager = new FileSaveMethods(getApplicationContext());
+
+        // Splash screen visible
+        setContentView(R.layout.splash_screen_layout);
 
         //Check does the file exists on first run after install
         if (!fileManager.fileExists("json_string") && !JSONPuller.isNetworkAvailable(this)) {
@@ -71,24 +74,26 @@ public class MainActivity extends ActionBarActivity {
         // Before running code in the separate thread
         @Override
         protected void onPreExecute() {
-            // Create a new progress dialog
-            progressDialog = new ProgressDialog(MainActivity.this);
-            // Set the progress dialog spinner progress bar
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            // Set the dialog title to 'Loading...'
-            progressDialog.setTitle("Loading...");
-            // Set the dialog message to 'Loading application View, please wait...'
-            progressDialog.setMessage("Loading application, please wait...");
-            // This dialog can't be canceled by pressing the back key
-            progressDialog.setCancelable(false);
-            // This dialog isn't indeterminate
-            progressDialog.setIndeterminate(false);
-            // The maximum number of items is 100
-            progressDialog.setMax(100);
-            // Set the current progress to zero
-            progressDialog.setProgress(0);
-            // Display the progress dialog
-            progressDialog.show();
+//            // Create a new progress dialog
+//            progressDialog = new ProgressDialog(MainActivity.this);
+//            // Set the progress dialog spinner progress bar
+//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            // Set the dialog title to 'Loading...'
+//            progressDialog.setTitle("Loading...");
+//            // Set the dialog message to 'Loading application View, please wait...'
+//            progressDialog.setMessage("Loading application, please wait...");
+//            // This dialog can't be canceled by pressing the back key
+//            progressDialog.setCancelable(false);
+//            // This dialog isn't indeterminate
+//            progressDialog.setIndeterminate(false);
+//            // The maximum number of items is 100
+//            progressDialog.setMax(100);
+//            // Set the current progress to zero
+//            progressDialog.setProgress(0);
+//            // Display the progress dialog
+//            progressDialog.show();
+
+            // Splash screen variant
         }
 
         // The code to be executed in a background thread.
@@ -110,7 +115,7 @@ public class MainActivity extends ActionBarActivity {
                 //events=CalendarMaker.orderEvents(events);
 
                 // This ends the spinner
-                publishProgress(100);
+                //publishProgress(100);
             }
 
             return null;
@@ -120,14 +125,14 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onProgressUpdate(Integer... values) {
             // set the current progress of the progress dialog
-            progressDialog.setProgress(values[0]);
+            //progressDialog.setProgress(values[0]);
         }
 
         // after executing the code in the thread
         @Override
         protected void onPostExecute(Void result) {
             // close the progress dialog
-            progressDialog.dismiss();
+            //progressDialog.dismiss();
 
             // The onCreate part.
             setContentView(R.layout.activity_main);
@@ -142,45 +147,64 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public void onRefresh() {
                     // Refresh items
-                    refreshItems();
+                    Log.v("MainActivity", "Refreshing Items");
+                    // Calling the JSON Pulling action if the device is connected to the internet
+                    if (JSONPuller.isNetworkAvailable(MainActivity.this)) {
+                        new RefreshItems().execute();
+                    }
+                    // If not connected then show an Alertdialog
+                    else {
+                        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                        alertDialog.setTitle("Error");
+                        alertDialog.setMessage("No internet connection");
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                        alertDialog.show();
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    }
                 }
             });
 
         }
     }
 
-    // When swipe refresh starts
-    public void refreshItems() {
-        Log.v("MainActivity", "Refreshing Items");
-        // Calling the JSON Pulling action if the device is connected to the internet
-        if (JSONPuller.isNetworkAvailable(this)) {
+    // AsyncTask which needed for the SwipeRefresh
+    private class RefreshItems extends AsyncTask<Void, Integer, Void> {
+        // Before running code in the separate thread
+        @Override
+        protected void onPreExecute() {
+            // Starting new JSON pulling
             obj.fetchJSON();
             events.clear();
-            // Delay until the parsing is completed
-            while (obj.parsingComplete) ;
-            // Getting the List<EventInfo> array
+        }
+
+        // The code to be executed in a background thread.
+        @Override
+        protected Void doInBackground(Void... params) {
+            //Get the current thread's token
+            synchronized (this) {
+                // Waiting for json donwload
+                while (obj.parsingComplete);
+                // This ends the spinner
+                publishProgress(100);
+            }
+
+            return null;
+        }
+
+        // after executing the code in the thread
+        @Override
+        protected void onPostExecute(Void result) {
             events = CalendarMaker.orderEvents(obj.getEvents());
-            // Load complete
             connectWithRecycleVIew();
-        }
-        // If not connected then show an Alertdialog
-        else {
-            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-            alertDialog.setTitle("Error");
-            alertDialog.setMessage("No internet connection");
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            alertDialog.show();
+            // Finish the refreshing spinner
+            mSwipeRefreshLayout.setRefreshing(false);
 
         }
-
-
-        // Stop refresh animation
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     // When swipe refresh and first run ends
