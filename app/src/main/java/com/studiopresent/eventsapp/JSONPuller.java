@@ -94,6 +94,7 @@ public class JSONPuller {
                 ei.longitude = j2.getString("longitude");
 
                 ei.id = i;
+                ei.nid = Integer.parseInt(j2.getString("nid"));
 
                 JSONObject imgobj = j2.getJSONObject("imageHdpi");
                 ei.imageSrc = imgobj.getString("src");

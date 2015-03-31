@@ -59,6 +59,10 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
         holder.rlayout.setId(ei.id);
         holder.rlayout.setOnClickListener(ei.onClickListener);
 
+        // Experimental
+        holder.vTint.setBackgroundColor(context.getResources().getIntArray(R.array.material_colors)
+                [ei.nid % context.getResources().getIntArray(R.array.material_colors).length]);
+
         Picasso mPic = Picasso.with(context);
         mPic.setIndicatorsEnabled(true);
         mPic.setLoggingEnabled(true);
@@ -91,6 +95,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
         protected TextView vTitle;
         protected TextView vSTartDate, vName;
         protected ImageView vImage;
+        protected ImageView vTint;
         protected RelativeLayout rlayout; // this needed for the background change
         protected View vProgress;
 
@@ -99,6 +104,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
             vTitle = (TextView) v.findViewById(R.id.txt_title);
             vSTartDate = (TextView) v.findViewById(R.id.txt_startDate);
             vName = (TextView) v.findViewById(R.id.txt_name);
+            vTint = (ImageView) v.findViewById(R.id.tint);
             vImage = (ImageView) v.findViewById(R.id.image);
             rlayout = (RelativeLayout) v.findViewById(R.id.card_rlayout);
             vProgress = v.findViewById(R.id.card_progressbar);

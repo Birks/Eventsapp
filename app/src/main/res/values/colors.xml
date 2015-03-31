@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000</color>
+
+    <array name="material_colors">
+        <item>#956e00</item>
+        <item>#8b1a4a</item>
+        <item>#ff426284</item>
+        <item>#ae4022</item>
+        <item>#ff1a8261</item>
+        <item>#717220</item>
+        <item>#2f308e</item>
+        <item>#187139</item>
+        <item>#941932</item>
+    </array>
+</resources>
