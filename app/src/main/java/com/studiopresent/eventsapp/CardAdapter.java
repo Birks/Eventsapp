@@ -60,8 +60,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
         holder.rlayout.setOnClickListener(ei.onClickListener);
 
         // Experimental
-        holder.vTint.setBackgroundColor(context.getResources().getIntArray(R.array.material_colors)
-                [ei.nid % context.getResources().getIntArray(R.array.material_colors).length]);
+//        holder.vTint.setBackgroundColor(context.getResources().getIntArray(R.array.material_colors)
+//                [ei.nid % context.getResources().getIntArray(R.array.material_colors).length]);
 
         Picasso mPic = Picasso.with(context);
         mPic.setIndicatorsEnabled(true);
