@@ -64,8 +64,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
 //                [ei.nid % context.getResources().getIntArray(R.array.material_colors).length]);
 
         Picasso mPic = Picasso.with(context);
-        mPic.setIndicatorsEnabled(true);
-        mPic.setLoggingEnabled(true);
+        //mPic.setIndicatorsEnabled(true);
+        //mPic.setLoggingEnabled(true);
         // Shows the progressbar spinner until the image downloaded
         mPic.load(ei.imageSrc).noPlaceholder().into(holder.vImage, new Callback() {
             @Override
