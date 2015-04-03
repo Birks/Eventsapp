@@ -115,8 +115,10 @@ public class DetailsActivity extends ActionBarActivity {
         /*String defaultMap2 = "&zoom=16&size=" + Integer.toString((int) Math.floor(metrics.widthPixels
     * 0.895)) + "x" +
             Integer.toString((int) Math.floor(metrics.widthPixels * 0.46)) + "&sensor=false&markers=";*/
-        String defaultMap2 = "&zoom=16&size="+heightPixel+"x"+widthPixel+"&sensor=false&markers=";
+        //String defaultMap2 = "&zoom=18&size="+heightPixel+"x"+ Integer.toString((int) (widthPixel*0.5))+"&sensor=false&markers=";
 
+        // FIX SIZE VERSION !!!
+        String defaultMap2 = "&zoom=18&size=1065x324&sensor=false&markers=";
         Log.v("defaultMap2", defaultMap2);
 
     String coord = "";
