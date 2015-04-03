@@ -105,26 +105,37 @@ public class DetailsActivity extends ActionBarActivity {
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        int widthPixel = dm.widthPixels;
+        int heightPixel = dm.heightPixels;
+
+        Log.v("disp", widthPixel + "x" + heightPixel);
+
         String defaultMap = "http://maps.google.com/maps/api/staticmap?center=";
-        String defaultMap2 = "&zoom=16&size=" + Integer.toString((int) Math.floor(metrics.widthPixels * 0.895)) + "x" +
-                Integer.toString((int) Math.floor(metrics.widthPixels * 0.46)) + "&sensor=false&markers=";
-        String coord = "";
-        message = intent.getStringExtra("LATITUDE");
-        lat = intent.getStringExtra("LATITUDE");
-        latD = Double.parseDouble(lat);
+        /*String defaultMap2 = "&zoom=16&size=" + Integer.toString((int) Math.floor(metrics.widthPixels
+    * 0.895)) + "x" +
+            Integer.toString((int) Math.floor(metrics.widthPixels * 0.46)) + "&sensor=false&markers=";*/
+        String defaultMap2 = "&zoom=16&size="+heightPixel+"x"+widthPixel+"&sensor=false&markers=";
+
+        Log.v("defaultMap2", defaultMap2);
+
+    String coord = "";
+    message = intent.getStringExtra("LATITUDE");
+    lat = intent.getStringExtra("LATITUDE");
+    latD = Double.parseDouble(lat);
 
 
-        coord += message + "%2C";
-        message = intent.getStringExtra("LONGITUDE");
-        lng = intent.getStringExtra("LONGITUDE");
-        lngD = Double.parseDouble(lng);
+    coord += message + "%2C";
+    message = intent.getStringExtra("LONGITUDE");
+    lng = intent.getStringExtra("LONGITUDE");
+    lngD = Double.parseDouble(lng);
 
-        coord += message;
-        defaultMap += coord + defaultMap2 + coord;
-        Log.v("coord", defaultMap + defaultMap2);
-        ImageView detMap = (ImageView) findViewById(R.id.det_map);
-        Picasso.with(this).load(defaultMap).noPlaceholder().into(detMap);
-    }
+    coord += message;
+    defaultMap += coord + defaultMap2 + coord;
+    Log.v("coord", defaultMap + defaultMap2);
+    ImageView detMap = (ImageView) findViewById(R.id.det_map);
+    Picasso.with(this).load(defaultMap).noPlaceholder().into(detMap);
+}
 
     public void Back(View v) {
         onBackPressed();
@@ -148,7 +159,6 @@ public class DetailsActivity extends ActionBarActivity {
         getMenuInflater().inflate(R.menu.menu_details, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
