@@ -33,9 +33,13 @@ public class SchedulingService extends IntentService {
     protected void onHandleIntent(Intent intent) {
 
 
-        Log.v("Alarm","IntentExtra: " + intent.getStringExtra("title"));
+        Log.v("Alarm","IntentExtra title: " + intent.getStringExtra("title"));
+        Log.v("Alarm","IntentExtra id: " + intent.getStringExtra("id"));
+        Log.v("Alarm","IntentExtra clock:" + intent.getStringExtra("clock"));
         // The URL from which to fetch content.
-        sendNotification(intent.getStringExtra("title"));
+
+        sendNotification(intent.getStringExtra("title"),intent.getStringExtra("id"),intent.getStringExtra("clock"));
+
         Log.i("Alarm", "Notification received!");
 
 
@@ -45,7 +49,7 @@ public class SchedulingService extends IntentService {
     }
 
     // Post a notification indicating whether a doodle was found.
-    private void sendNotification(String msg) {
+    private void sendNotification(String msg, String id,String clock) {
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -55,17 +59,17 @@ public class SchedulingService extends IntentService {
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle(getString(R.string.notification_toptext))
+                        .setContentTitle(msg)
                         .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(msg))
-                        .setContentText(msg);
+                                .bigText("Starts at " +clock))
+                        .setContentText("Starts at " +clock);
 
         // Set a sound effect to the notification
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         mBuilder.setSound(alarmSound);
 
         mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        mNotificationManager.notify(Integer.parseInt(id), mBuilder.build());
     }
 
 }

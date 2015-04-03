@@ -84,11 +84,6 @@ public class JSONPuller {
                 ei.dStartDate=CalendarMaker.generateFromString(j2.getString("startDate"));
                 ei.startDate=ei.dStartDate.getSerbianDateFormat();
 
-                // Create new Alarm when downloading JSON
-//                AlarmReceiver alarm = new AlarmReceiver();
-//                alarm.setAlarm(context,ei.dStartDate,ei.title);
-//                new AlarmReceiver().setAlarm(context,ei.dStartDate,ei.title);
-
                 ei.endDate = j2.getString("endDate");
                 ei.body = j2.getString("body");
                 ei.name = j2.getString("name");
@@ -136,6 +131,9 @@ public class JSONPuller {
                         ma.openEvent(v.getId());
                     }
                 };
+
+                // Create new Alarm when downloading JSON
+                new AlarmReceiver().setAlarm(context,ei);
 
                 // Add the object to the event array
                 events.add(ei);

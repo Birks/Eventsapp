@@ -24,8 +24,10 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Intent service = new Intent(context, SchedulingService.class);
+        // Forward to the notification
         service.putExtra("title", intent.getStringExtra("title"));
-
+        service.putExtra("id", intent.getStringExtra("id"));
+        service.putExtra("clock", intent.getStringExtra("clock"));
 
         // Start the service, keeping the device awake while it is launching.
         startWakefulService(context, service);
@@ -37,45 +39,41 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
      *
      * @param context
      */
-    public void setAlarm(Context context, DateObject schedulingDate, String title) {
-        Log.v("Alarm", "schedulingDate title: " + title);
-        Log.v("Alarm", "schedulingDate year: " + schedulingDate.year);
-        Log.v("Alarm", "schedulingDate month: " + schedulingDate.month);
-        Log.v("Alarm", "schedulingDate day: " + schedulingDate.day);
-        Log.v("Alarm", "schedulingDate hour: " + schedulingDate.hour);
-        Log.v("Alarm", "schedulingDate minute: " + schedulingDate.minute);
-        //this.title=title;
+    public void setAlarm(Context context, EventInfo eventInfo) {
+
+        Log.v("Alarm", "schedulingDate title: " + eventInfo.title);
+        Log.v("Alarm", "schedulingDate year: " + eventInfo.dStartDate.year);
+        Log.v("Alarm", "schedulingDate month: " + eventInfo.dStartDate.month);
+        Log.v("Alarm", "schedulingDate day: " + eventInfo.dStartDate.day);
+        Log.v("Alarm", "schedulingDate hour: " + eventInfo.dStartDate.hour);
+        Log.v("Alarm", "schedulingDate minute: " + eventInfo.dStartDate.minute);
 
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.putExtra("title", title);
-        alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        // Send some data to onReceive first then to the notification
+        intent.putExtra("title", eventInfo.title);
+        intent.putExtra("id", String.valueOf(eventInfo.id));
+        intent.putExtra("clock", eventInfo.dStartDate.hour + ":" + eventInfo.dStartDate.minute);
+        alarmIntent = PendingIntent.getBroadcast(context, eventInfo.id, intent, 0);
 
         Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(System.currentTimeMillis());
-        // Set the alarm's trigger time to 8:30 a.m.
-        calendar.set(Calendar.YEAR, Integer.parseInt(schedulingDate.year));
-        calendar.set(Calendar.MONTH, Integer.parseInt(schedulingDate.month)-1);
-        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(schedulingDate.day));
-        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(schedulingDate.hour));
+        // Set the alarms trigger time to 8:30 a.m.
+        calendar.set(Calendar.YEAR, Integer.parseInt(eventInfo.dStartDate.year));
+        calendar.set(Calendar.MONTH, Integer.parseInt(eventInfo.dStartDate.month) - 1);
+        calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(eventInfo.dStartDate.day));
+        calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(eventInfo.dStartDate.hour));
         calendar.add(Calendar.HOUR, -1);
-        calendar.set(Calendar.MINUTE, Integer.parseInt(schedulingDate.minute));
-
-//        calendar.set(Calendar.HOUR_OF_DAY, 18);
-//        calendar.set(Calendar.MINUTE, 20);
+        calendar.set(Calendar.MINUTE, Integer.parseInt(eventInfo.dStartDate.minute));
 
         Log.v("Alarm", "Calendar: " + calendar.getTime());
-        //Log.v("Alarm", "Alarm set");
 
 
-        // Set the alarm to fire at approximately 8:30 a.m., according to the device's
-        // clock, and to repeat once a day.
-        if (calendar.getTimeInMillis()>Calendar.getInstance().getTimeInMillis()) {
-            Log.v("Alarm", "Alarm set " + title + " Current time: " + Calendar.getInstance().getTime());
+        // Set the alarm to fire at approximately 8:30 a.m., according to the device's clock
+        // Check does the event older than the current time
+        if (calendar.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
+            Log.v("Alarm", "Alarm set " + eventInfo.title + " Current time: " + Calendar.getInstance().getTime());
             alarmMgr.set(AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(), alarmIntent);
-//            alarmMgr.setInexactRepeating(AlarmManager.RTC_WAKEUP,
-//                    calendar.getTimeInMillis(), AlarmManager.INTERVAL_FIFTEEN_MINUTES, alarmIntent);
         }
 
         // Enable {@code SampleBootReceiver} to automatically restart the alarm when the
