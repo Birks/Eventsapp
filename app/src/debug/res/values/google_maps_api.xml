@@ -7,15 +7,21 @@
 
     To get one, follow this link, follow the directions and press "Create" at the end:
 
+    keytool -genkey -v -keystore eventsapp.keystore -alias alias_name -keyalg RSA -keysize 2048 -validity 10000
+
+
 https://console.developers.google.com/flows/enableapi?apiid=maps_android_backend&keyType=CLIENT_SIDE_ANDROID&r=A2:B4:6E:DB:91:4B:6F:B1:3E:A7:94:25:54:E1:6D:46:CD:B9:35:51%3Bcom.studiopresent.eventsapp
 
     You can also add your credentials to an existing key, using this line:
     A2:B4:6E:DB:91:4B:6F:B1:3E:A7:94:25:54:E1:6D:46:CD:B9:35:51;com.studiopresent.eventsapp
 
+    key alias Eventsapp
+    password 123456
+
     Once you have your key (it starts with "AIza"), replace the "google_maps_key"
     string in this file.
         -->
     </string>
-    <string name="google_maps_key" templateMergeStrategy="preserve">AIzaSyBY3INVczP7cx8rrLtrvmPUox8vR12NjRs</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve">AIzaSyBQn3qzLWhyz555zyK42hdSoV4m0maY84k</string>
 
 </resources>

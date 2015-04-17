@@ -3,11 +3,13 @@ package com.studiopresent.eventsapp;
 import android.content.Context;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 
 public class FileSaveMethods {
@@ -24,11 +26,12 @@ public class FileSaveMethods {
         try {
             fis = fileContext.getApplicationContext().openFileInput(FILENAME);
 
+            BufferedReader r = new BufferedReader(new InputStreamReader(fis));
             String result = "";
-            int content;
-            while ((content = fis.read()) != -1) {
-                // convert to char and display it
-                result += String.valueOf((char) content);
+            String content;
+            while ((content = r.readLine()) != null) {
+                // Get full string line
+                result += content;
             }
             Log.v("FIS", result);
             return result;
@@ -46,7 +49,7 @@ public class FileSaveMethods {
             fos = fileContext.getApplicationContext().openFileOutput(FILENAME, Context.MODE_PRIVATE);
             fos.write(string.getBytes());
             fos.close();
-            Log.v("FOS", "Created file:"+ FILENAME + ", Value: " + string);
+            Log.v("FOS", "Created file:" + FILENAME + ", Value: " + string);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

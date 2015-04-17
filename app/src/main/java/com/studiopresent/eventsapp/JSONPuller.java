@@ -1,9 +1,11 @@
 package com.studiopresent.eventsapp;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
@@ -11,9 +13,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 import com.studiopresent.eventsapp.gson.EventsJson;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,7 +44,7 @@ public class JSONPuller {
         this.ma = ma;
         this.context = context;
         this.fileIOManager = new FileSaveMethods(ma);
-        events = new ArrayList<EventInfo>();
+        events = new ArrayList<>();
     }
 
     public List<EventInfo> getEvents() {
@@ -55,6 +54,7 @@ public class JSONPuller {
     @SuppressLint("NewApi")
     public void readAndParseJSON(String in) {
         try {
+            Log.v("GSON", "Parsing started...");
 
             // GSON initalize
             Gson gson = new GsonBuilder().create();
@@ -73,8 +73,8 @@ public class JSONPuller {
                 EventInfo ei = new EventInfo();
                 ei.title = gObj.nodes[i].node.title;
 
-                ei.dStartDate=CalendarMaker.generateFromString(gObj.nodes[i].node.startDate);
-                ei.startDate=ei.dStartDate.getSerbianDateFormat();
+                ei.dStartDate = CalendarMaker.generateFromString(gObj.nodes[i].node.startDate);
+                ei.startDate = ei.dStartDate.getSerbianDateFormat();
 
                 ei.endDate = gObj.nodes[i].node.endDate;
                 ei.body = gObj.nodes[i].node.body;
@@ -92,7 +92,7 @@ public class JSONPuller {
                 // Online vs offline mode
                 if (isNetworkAvailable(context)) {
                     // When network available then download from server and save into file
-                    ei.imageBitmap = Picasso.with(context).load( gObj.nodes[i].node.imageHdpi.src).get();
+                    ei.imageBitmap = Picasso.with(context).load(gObj.nodes[i].node.imageHdpi.src).get();
 
 
                     File file = new File(context.getFilesDir().getAbsolutePath() + "/pic_" + ei.id + ".jpg");
@@ -123,7 +123,7 @@ public class JSONPuller {
                 };
 
                 // Create new Alarm when downloading JSON
-                new AlarmReceiver().setAlarm(context,ei);
+                new AlarmReceiver().setAlarm(context, ei);
 
                 // Add the object to the event array
                 events.add(ei);

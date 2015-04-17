@@ -1,11 +1,9 @@
 package com.studiopresent.eventsapp;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -15,11 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -188,7 +183,7 @@ public class MainActivity extends ActionBarActivity {
             //Get the current thread's token
             synchronized (this) {
                 // Waiting for json donwload
-                while (obj.parsingComplete);
+                while (obj.parsingComplete) ;
                 // This ends the spinner
                 publishProgress(100);
             }

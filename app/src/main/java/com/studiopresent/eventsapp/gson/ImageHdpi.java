@@ -6,7 +6,6 @@ package com.studiopresent.eventsapp.gson;
  */
 public class ImageHdpi {
     public String src;
-    public String alt;
 
     // Getters and setters are not required for this example.
     // GSON sets the fields directly using reflection.
