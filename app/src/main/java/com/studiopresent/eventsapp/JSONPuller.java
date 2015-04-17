@@ -1,36 +1,23 @@
 package com.studiopresent.eventsapp;
-
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Looper;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.ListView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.studiopresent.eventsapp.gson.EventsJson;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -68,41 +55,44 @@ public class JSONPuller {
     @SuppressLint("NewApi")
     public void readAndParseJSON(String in) {
         try {
-            JSONObject reader = new JSONObject(in);
-            JSONArray nodes = reader.getJSONArray("nodes");
+
+            // GSON initalize
+            Gson gson = new GsonBuilder().create();
+            EventsJson gObj = gson.fromJson(in, EventsJson.class);
+//            Log.v("GSON", gObj.toString());
+
+//            JSONObject reader = new JSONObject(in);
+//            JSONArray nodes = reader.getJSONArray("nodes");
 
             // Array is needed to store multiple events
-            for (int i = 0; i < nodes.length(); i++) {
-                JSONObject jRealObj = nodes.getJSONObject(i);
-                JSONObject j2 = jRealObj.getJSONObject("node");
+            for (int i = 0; i < gObj.nodes.length; i++) {
+//                JSONObject jRealObj = nodes.getJSONObject(i);
+//                JSONObject j2 = jRealObj.getJSONObject("node");
 
                 // JSON Data main part
                 EventInfo ei = new EventInfo();
-                ei.title = j2.getString("title");
-                Log.v("title", j2.getString("title"));
-                //ei.startDate = j2.getString("startDate");
-                ei.dStartDate=CalendarMaker.generateFromString(j2.getString("startDate"));
+                ei.title = gObj.nodes[i].node.title;
+
+                ei.dStartDate=CalendarMaker.generateFromString(gObj.nodes[i].node.startDate);
                 ei.startDate=ei.dStartDate.getSerbianDateFormat();
 
-                ei.endDate = j2.getString("endDate");
-                ei.body = j2.getString("body");
-                ei.name = j2.getString("name");
+                ei.endDate = gObj.nodes[i].node.endDate;
+                ei.body = gObj.nodes[i].node.body;
+                ei.name = gObj.nodes[i].node.name;
 
-                ei.city = j2.getString("city");
-                ei.street = j2.getString("street");
-                ei.latitude = j2.getString("latitude");
-                ei.longitude = j2.getString("longitude");
+                ei.city = gObj.nodes[i].node.city;
+                ei.street = gObj.nodes[i].node.street;
+                ei.latitude = gObj.nodes[i].node.latitude;
+                ei.longitude = gObj.nodes[i].node.longitude;
 
                 ei.id = i;
-                ei.nid = Integer.parseInt(j2.getString("nid"));
 
-                JSONObject imgobj = j2.getJSONObject("imageHdpi");
-                ei.imageSrc = imgobj.getString("src");
+                ei.imageSrc = gObj.nodes[i].node.imageHdpi.src;
 
                 // Online vs offline mode
                 if (isNetworkAvailable(context)) {
                     // When network available then download from server and save into file
-                    ei.imageBitmap = Picasso.with(context).load(imgobj.getString("src")).get();
+                    ei.imageBitmap = Picasso.with(context).load( gObj.nodes[i].node.imageHdpi.src).get();
 
 
                     File file = new File(context.getFilesDir().getAbsolutePath() + "/pic_" + ei.id + ".jpg");
