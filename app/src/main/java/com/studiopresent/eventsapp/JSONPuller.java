@@ -136,6 +136,7 @@ public class JSONPuller {
                     ei.imageSrc = String.valueOf(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath() + "/pic_" + ei.id + ".jpg")));
                     ei.mapURLSrc = String.valueOf(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath() + "/picmap_" + ei.id + ".jpg")));
                     ei.imageBitmap = Picasso.with(context).load(ei.imageSrc).get();
+                    
                 }
 
 
