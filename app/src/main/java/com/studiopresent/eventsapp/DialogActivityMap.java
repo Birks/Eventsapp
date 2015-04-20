@@ -87,7 +87,7 @@ public class DialogActivityMap extends FragmentActivity {
     }
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_dialog_activity_map, menu);
@@ -107,5 +107,5 @@ public class DialogActivityMap extends FragmentActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }

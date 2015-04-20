@@ -3,15 +3,10 @@ package com.studiopresent.eventsapp;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -78,7 +73,7 @@ public class DetailsActivity extends ActionBarActivity {
         Log.v("bitmap", "receive BITMAP intent");
         Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
         Log.v("bitmap", "bitmap factory");
-        ImageView imageView = (ImageView) findViewById(R.id.det_image);
+        final ImageView imageView = (ImageView) findViewById(R.id.det_image);
         Log.v("bitmap", "imageview initialized");
         imageView.setImageBitmap(bitmap);
         Log.v("bitmap", "bitmap added imageview");
@@ -101,43 +96,32 @@ public class DetailsActivity extends ActionBarActivity {
         textView = (TextView) findViewById(R.id.det_GPS);
         textView.setText("GPS: " + message);
 
-        // Needed for the size of the map
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
 
+        // MAP URL
+        // Display width metric
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int widthPixel = dm.widthPixels;
-        int heightPixel = dm.heightPixels;
 
-        Log.v("disp", widthPixel + "x" + heightPixel);
+        // height ratio
+        double ratio = (double)widthPixel/480;
+        Log.v("disp width", "width: "+widthPixel+" ratio: "+ratio);
+        double heightPixel = ratio * 240;
 
-        String defaultMap = "http://maps.google.com/maps/api/staticmap?center=";
-        /*String defaultMap2 = "&zoom=16&size=" + Integer.toString((int) Math.floor(metrics.widthPixels
-    * 0.895)) + "x" +
-            Integer.toString((int) Math.floor(metrics.widthPixels * 0.46)) + "&sensor=false&markers=";*/
-        //String defaultMap2 = "&zoom=18&size="+heightPixel+"x"+ Integer.toString((int) (widthPixel*0.5))+"&sensor=false&markers=";
+        Log.v("disp", widthPixel + "x" + (int)heightPixel);
 
-        // FIX SIZE VERSION !!!
-        String defaultMap2 = "&zoom=18&size=1065x324&sensor=false&markers=";
-        Log.v("defaultMap2", defaultMap2);
-
-    String coord = "";
-    message = intent.getStringExtra("LATITUDE");
-    lat = intent.getStringExtra("LATITUDE");
-    latD = Double.parseDouble(lat);
+        String mapUrl = intent.getStringExtra("MAPURL");
+        Log.v("MAP", mapUrl);
+        final ImageView detMap = (ImageView) findViewById(R.id.det_map);
+        Picasso.with(this).load(mapUrl).resize(widthPixel,(int)heightPixel).noPlaceholder().into(detMap);
 
 
-    coord += message + "%2C";
-    message = intent.getStringExtra("LONGITUDE");
-    lng = intent.getStringExtra("LONGITUDE");
-    lngD = Double.parseDouble(lng);
+        lat = intent.getStringExtra("LATITUDE");
+        latD = Double.parseDouble(lat);
 
-    coord += message;
-    defaultMap += coord + defaultMap2 + coord;
-    Log.v("coord", defaultMap + defaultMap2);
-    ImageView detMap = (ImageView) findViewById(R.id.det_map);
-    Picasso.with(this).load(defaultMap).noPlaceholder().into(detMap);
-}
+        lng = intent.getStringExtra("LONGITUDE");
+        lngD = Double.parseDouble(lng);
+    }
+
 
     public void Back(View v) {
         onBackPressed();
@@ -150,12 +134,11 @@ public class DetailsActivity extends ActionBarActivity {
         intent.putExtras(b);
         b.putDouble("LNG",lngD);
         intent.putExtras(b);
-
         startActivity(intent);
     }
 
     // This part is only required for a later use. Not functional yet.
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_details, menu);
@@ -169,5 +152,5 @@ public class DetailsActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }

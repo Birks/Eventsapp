@@ -34,4 +34,7 @@ public class EventInfo {
     protected Drawable imageHdpi;
     protected Bitmap imageBitmap;
     protected Picasso pic;
+    protected String mapURL;
+    protected Bitmap mapBitmap;
+    protected String mapURLSrc;
 }

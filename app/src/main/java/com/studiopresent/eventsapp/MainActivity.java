@@ -258,12 +258,13 @@ public class MainActivity extends ActionBarActivity {
 
         String GPS = events.get(index).latitude + ", " + events.get(index).longitude;
         intent.putExtra("GPS", GPS);
-        startActivity(intent);
 
+        intent.putExtra("MAPURL", events.get(index).mapURLSrc);
+        startActivity(intent);
     }
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -283,5 +284,5 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 }

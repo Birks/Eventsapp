@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 
@@ -89,12 +90,34 @@ public class JSONPuller {
 
                 ei.imageSrc = gObj.nodes[i].node.imageHdpi.src;
 
+                // Static map url string
+
+                String coord = ei.latitude + "%2C" + ei.longitude;
+                String mapStr = "http://maps.google.com/maps/api/staticmap?center="+coord+"&zoom=17&size=480x240&sensor=false&format=jpg&markers="+coord;
+
+
+
                 // Online vs offline mode
                 if (isNetworkAvailable(context)) {
+                    ei.mapURLSrc = mapStr;
+                    Log.v("mapURL", ei.mapURLSrc);
                     // When network available then download from server and save into file
                     ei.imageBitmap = Picasso.with(context).load(gObj.nodes[i].node.imageHdpi.src).get();
+                    ei.mapBitmap = Picasso.with(context).load(mapStr).get();
 
 
+                    // Static Image save
+                    File fileStaticMap = new File(context.getFilesDir().getAbsolutePath() + "/picmap_" + ei.id + ".jpg");
+                    try {
+                        fileStaticMap.createNewFile();
+                        FileOutputStream ostream = new FileOutputStream(fileStaticMap);
+                        ei.mapBitmap.compress(Bitmap.CompressFormat.JPEG, 75, ostream);
+                        ostream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    // Main Image save
                     File file = new File(context.getFilesDir().getAbsolutePath() + "/pic_" + ei.id + ".jpg");
                     try {
                         file.createNewFile();
@@ -108,7 +131,10 @@ public class JSONPuller {
                 } else {
                     // When not connected to network then loads from file
                     Log.v("global_index", String.valueOf(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath() + "/pic_" + ei.id + ".jpg"))));
+                    Log.v("global_index", String.valueOf(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath() + "/picmap_" + ei.id + ".jpg"))));
+
                     ei.imageSrc = String.valueOf(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath() + "/pic_" + ei.id + ".jpg")));
+                    ei.mapURLSrc = String.valueOf(Uri.fromFile(new File(context.getFilesDir().getAbsolutePath() + "/picmap_" + ei.id + ".jpg")));
                     ei.imageBitmap = Picasso.with(context).load(ei.imageSrc).get();
                 }
 

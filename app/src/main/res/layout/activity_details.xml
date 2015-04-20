@@ -110,6 +110,7 @@
                 android:text="@string/temp_string"
                 android:textSize="14sp" />
 
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -139,14 +140,15 @@
 
                 <ImageView
                     android:id="@+id/det_map"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:scaleType="fitXY"
                     android:adjustViewBounds="true"
+                    android:background="@color/material_blue_grey_800"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="8dp"
                     android:contentDescription="@string/static_map"
-                    android:onClick="showDialogActivityMap"
-                    android:src="@drawable/ic_launcher" />
+                    android:onClick="showDialogActivityMap" />
 
             </LinearLayout>
 
@@ -158,4 +160,5 @@
         android:id="@+id/app_bar"
         layout="@layout/app_bar"
         android:adjustViewBounds="true" />
+
 </RelativeLayout>
