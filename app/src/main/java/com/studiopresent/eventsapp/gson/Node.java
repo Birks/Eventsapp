@@ -8,6 +8,7 @@ public class Node {
     public String title;
     public String startDate;
     public String endDate;
+    public String updatedDate;
     public String body;
     public String name;
     public String city;
@@ -20,8 +21,8 @@ public class Node {
     @Override
     public String toString() {
         return " title - " + title + "\n startDate - " + startDate + "\n endDate - " + endDate + "" +
-                "\n body - " + body + "\n" + imageHdpi + "\n name - " + name + "\n city - " + city +
-                "\n street - " + street + "\n longitude - " + longitude + "\n latitude - " + latitude;
+                "\n updatedDate - " + updatedDate + "\n body - " + body + "\n" + imageHdpi + "\n name - " + name + "" +
+                "\n city - " + city + "\n street - " + street + "\n longitude - " + longitude + "\n latitude - " + latitude;
 
     }
 }

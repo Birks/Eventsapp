@@ -33,10 +33,11 @@ import java.util.List;
 public class JSONPuller {
 
     private String urlString = null;
-    private List<EventInfo> events;
+    public List<EventInfo> events;
     private MainActivity ma;
     private Context context;
     private FileSaveMethods fileIOManager;
+    private List<EventInfo> oldEvents;
     public static boolean hasInternetConnection = true;
 
     public volatile boolean parsingComplete = true;
@@ -49,6 +50,7 @@ public class JSONPuller {
         this.context = context;
         this.fileIOManager = new FileSaveMethods(ma);
         events = new ArrayList<>();
+        // oldEvents = new ArrayList<>();
     }
 
     public List<EventInfo> getEvents() {
@@ -65,6 +67,7 @@ public class JSONPuller {
             EventsJson gObj = gson.fromJson(in, EventsJson.class);
 //            Log.v("GSON", gObj.toString());
 
+            events.clear();
             // Array is needed to store multiple events
             for (int i = 0; i < gObj.nodes.length; i++) {
 
@@ -74,6 +77,8 @@ public class JSONPuller {
 
                 ei.dStartDate = CalendarMaker.generateFromString(gObj.nodes[i].node.startDate);
                 ei.startDate = ei.dStartDate.getSerbianDateFormat();
+
+                ei.updatedDate = gObj.nodes[i].node.updatedDate;
 
                 ei.endDate = gObj.nodes[i].node.endDate;
                 ei.body = gObj.nodes[i].node.body;
@@ -91,8 +96,7 @@ public class JSONPuller {
                 // Static map url string
 
                 String coord = ei.latitude + "%2C" + ei.longitude;
-                String mapStr = "http://maps.google.com/maps/api/staticmap?center="+coord+"&zoom=17&size=480x240&sensor=false&format=jpg&markers="+coord;
-
+                String mapStr = "http://maps.google.com/maps/api/staticmap?center=" + coord + "&zoom=17&size=480x240&sensor=false&format=jpg&markers=" + coord;
 
 
                 // Online vs offline mode
@@ -146,6 +150,23 @@ public class JSONPuller {
                     }
                 };
 
+                // Check date update
+                //Log.v("Dateupdate", String.valueOf(oldEvents==null));
+
+                if (!(oldEvents == null)) {
+//                  Log.v("Updatedate old", oldEvents.get(i).updatedDate);
+//                  Log.v("Updatedate new", ei.updatedDate);
+
+                    Log.v("Updatedate old name", oldEvents.get(i).name);
+                    Log.v("Updatedate new name", ei.name);
+
+                    if (!oldEvents.get(i).updatedDate.equals(ei.updatedDate)) {
+                        Log.v("Dateupdate", "Update found!");
+                    } else {
+                        Log.v("Dateupdate", "No update found!");
+                    }
+                }
+
                 // Create new Alarm when downloading JSON
                 new AlarmReceiver().setAlarm(context, ei);
 
@@ -171,6 +192,26 @@ public class JSONPuller {
         if (isNetworkAvailable(context)) {
             // available network
             Log.v("FetchJSON", "Network available");
+
+            // Fetching old JSON from file
+            if (fileIOManager.fileExists("json_string")) {
+                Thread thread = new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        readAndParseJSON(fileIOManager.readFromFile("json_string"));
+                    }
+                });
+
+                thread.start();
+
+                while (parsingComplete) ;
+                Log.v("Updatedate", "Old Parsing completed");
+                oldEvents = new ArrayList<>(events);
+                //oldEvents = events;
+                events.clear();
+            }
+
 
             parsingComplete = true;
             Thread thread = new Thread(new Runnable() {
@@ -202,7 +243,7 @@ public class JSONPuller {
         } else {
             // no network
             Log.v("FetchJSON", "No network available");
-            hasInternetConnection=false;
+            hasInternetConnection = false;
             readAndParseJSON(fileIOManager.readFromFile("json_string"));
         }
     }
@@ -229,8 +270,8 @@ public class JSONPuller {
                 urlc.setRequestProperty("Connection", "close");
                 urlc.setConnectTimeout(2000); // Timeout 2 seconds.
                 try {
-                urlc.connect();}
-                catch (Exception e) {
+                    urlc.connect();
+                } catch (Exception e) {
                     Log.v("FetchJSON", "Error, no internet avalible or server is down.");
                     e.printStackTrace();
                 }

@@ -109,7 +109,7 @@ public class MainActivity extends ActionBarActivity {
                 obj.fetchJSON();
 
                 // Delay until the parsing is completed
-                while (obj.parsingComplete) ;
+                while (obj.parsingComplete);
 
                 // Getting the List<EventInfo> array
                 events = CalendarMaker.orderEvents(obj.getEvents());
@@ -179,7 +179,10 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onPreExecute() {
             // Starting new JSON pulling
+            //obj.events.clear();
+            obj = new JSONPuller(MainActivity.this, getBaseContext());
             obj.fetchJSON();
+
             events.clear();
         }
 
@@ -189,7 +192,7 @@ public class MainActivity extends ActionBarActivity {
             //Get the current thread's token
             synchronized (this) {
                 // Waiting for json donwload
-                while (obj.parsingComplete) ;
+                while (obj.parsingComplete);
                 // This ends the spinner
                 publishProgress(100);
             }
