@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.StrictMode;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -36,6 +37,11 @@ public class MainActivity extends ActionBarActivity {
 
         // Instantiation of the JSONPuller object
         obj = new JSONPuller(this, getBaseContext());
+
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
 
         // Initialize file manager
         fileManager = new FileSaveMethods(getApplicationContext());

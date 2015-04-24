@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -35,6 +37,7 @@ public class JSONPuller {
     private MainActivity ma;
     private Context context;
     private FileSaveMethods fileIOManager;
+    public static boolean hasInternetConnection = true;
 
     public volatile boolean parsingComplete = true;
 
@@ -62,13 +65,8 @@ public class JSONPuller {
             EventsJson gObj = gson.fromJson(in, EventsJson.class);
 //            Log.v("GSON", gObj.toString());
 
-//            JSONObject reader = new JSONObject(in);
-//            JSONArray nodes = reader.getJSONArray("nodes");
-
             // Array is needed to store multiple events
             for (int i = 0; i < gObj.nodes.length; i++) {
-//                JSONObject jRealObj = nodes.getJSONObject(i);
-//                JSONObject j2 = jRealObj.getJSONObject("node");
 
                 // JSON Data main part
                 EventInfo ei = new EventInfo();
@@ -98,7 +96,7 @@ public class JSONPuller {
 
 
                 // Online vs offline mode
-                if (isNetworkAvailable(context)) {
+                if (hasInternetConnection) {
                     ei.mapURLSrc = mapStr;
                     Log.v("mapURL", ei.mapURLSrc);
                     // When network available then download from server and save into file
@@ -204,6 +202,7 @@ public class JSONPuller {
         } else {
             // no network
             Log.v("FetchJSON", "No network available");
+            hasInternetConnection=false;
             readAndParseJSON(fileIOManager.readFromFile("json_string"));
         }
     }
@@ -215,7 +214,41 @@ public class JSONPuller {
 
     // Checks whether the connection is available to the internet
     public static boolean isNetworkAvailable(Context context) {
-        return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
+        // return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
+
+
+        try {
+            ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+            if (netInfo != null && netInfo.isConnected()) {
+
+                //Network is available but check if we can get access from the network.
+                URL url = new URL("http://193.105.163.234/");
+                HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
+                urlc.setRequestProperty("Connection", "close");
+                urlc.setConnectTimeout(2000); // Timeout 2 seconds.
+                try {
+                urlc.connect();}
+                catch (Exception e) {
+                    Log.v("FetchJSON", "Error, no internet avalible or server is down.");
+                    e.printStackTrace();
+                }
+
+                if (urlc.getResponseCode() == 200)  //Successful response.
+                {
+                    Log.v("FetchJSON", "Has internet");
+                    return true;
+                } else {
+                    Log.v("FetchJSON", "NO INTERNET");
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+
     }
 
 }
