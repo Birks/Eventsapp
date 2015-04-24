@@ -108,10 +108,13 @@ public class MainActivity extends ActionBarActivity {
                 // Calling the JSON Pulling action
                 obj.fetchJSON();
 
+
                 // Delay until the parsing is completed
-                while (obj.parsingComplete);
+                while (obj.parsingComplete) ;
 
                 // Getting the List<EventInfo> array
+                events= obj.getEvents();
+                onNewIntent(getIntent());
                 events = CalendarMaker.orderEvents(obj.getEvents());
                 //events=CalendarMaker.orderEvents(events);
 
@@ -134,6 +137,8 @@ public class MainActivity extends ActionBarActivity {
         protected void onPostExecute(Void result) {
             // close the progress dialog
             //progressDialog.dismiss();
+
+            //onNewIntent(getIntent());
 
             // The onCreate part.
             setContentView(R.layout.activity_main);
@@ -192,7 +197,7 @@ public class MainActivity extends ActionBarActivity {
             //Get the current thread's token
             synchronized (this) {
                 // Waiting for json donwload
-                while (obj.parsingComplete);
+                while (obj.parsingComplete) ;
                 // This ends the spinner
                 publishProgress(100);
             }
@@ -270,6 +275,18 @@ public class MainActivity extends ActionBarActivity {
 
         intent.putExtra("MAPURL", events.get(index).mapURLSrc);
         startActivity(intent);
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            if (extras.containsKey("ID")) {
+                Log.v("Startup", extras.getString("ID"));
+                openEvent(Integer.parseInt(extras.getString("ID")));
+            }
+        }
     }
 
 

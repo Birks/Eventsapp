@@ -1,13 +1,19 @@
 package com.studiopresent.eventsapp;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.RingtoneManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -151,12 +157,7 @@ public class JSONPuller {
                 };
 
                 // Check date update
-                //Log.v("Dateupdate", String.valueOf(oldEvents==null));
-
                 if (!(oldEvents == null)) {
-//                  Log.v("Updatedate old", oldEvents.get(i).updatedDate);
-//                  Log.v("Updatedate new", ei.updatedDate);
-
                     Log.v("Updatedate old name", oldEvents.get(i).name);
                     Log.v("Updatedate new name", ei.name);
 

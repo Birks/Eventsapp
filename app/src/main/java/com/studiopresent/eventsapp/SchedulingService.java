@@ -1,6 +1,7 @@
 package com.studiopresent.eventsapp;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -53,8 +54,13 @@ public class SchedulingService extends IntentService {
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
+        Intent intent =  new Intent(this, MainActivity.class);
+        intent.putExtra("ID", id);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -62,7 +68,11 @@ public class SchedulingService extends IntentService {
                         .setContentTitle(msg)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText("Starts at " +clock))
-                        .setContentText("Starts at " +clock);
+                        .setContentText("Starts at " + id);
+
+        mBuilder.setAutoCancel(true);
+        mBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+
 
         // Set a sound effect to the notification
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
