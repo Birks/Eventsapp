@@ -137,7 +137,7 @@ public class DetailsActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
-    // COMMIT TEST
+    // COMMIT TEST 2
 
     // This part is only required for a later use. Not functional yet.
     /*@Override
