@@ -137,6 +137,8 @@ public class DetailsActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    // COMMIT TEST
+
     // This part is only required for a later use. Not functional yet.
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
