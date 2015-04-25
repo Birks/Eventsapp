@@ -39,7 +39,21 @@ public class SchedulingService extends IntentService {
         Log.v("Alarm","IntentExtra clock:" + intent.getStringExtra("clock"));
         // The URL from which to fetch content.
 
-        sendNotification(intent.getStringExtra("title"),intent.getStringExtra("id"),intent.getStringExtra("clock"));
+        sendNotification(
+                intent.getStringExtra("title"),
+                intent.getByteArrayExtra("bitmap"),
+                intent.getStringExtra("startDate"),
+                intent.getStringExtra("endDate"),
+                intent.getStringExtra("name"),
+                intent.getStringExtra("body"),
+                intent.getStringExtra("city"),
+                intent.getStringExtra("street"),
+                intent.getStringExtra("latitude"),
+                intent.getStringExtra("longitude"),
+                intent.getStringExtra("gps"),
+                intent.getStringExtra("mapUrlSrc"),
+                intent.getStringExtra("id"),
+                intent.getStringExtra("clock"));
 
         Log.i("Alarm", "Notification received!");
 
@@ -50,22 +64,47 @@ public class SchedulingService extends IntentService {
     }
 
     // Post a notification indicating whether a doodle was found.
-    private void sendNotification(String msg, String id,String clock) {
+    private void sendNotification(String title,
+                                  byte[] byteArray,
+                                  String startDate,
+                                  String endDate,
+                                  String name,
+                                  String body,
+                                  String city,
+                                  String street,
+                                  String latitude,
+                                  String longitude,
+                                  String gps,
+                                  String mapUrlSrc,
+                                  String id,
+                                  String clock) {
         NotificationManager mNotificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent intent =  new Intent(this, MainActivity.class);
+        Intent intent =  new Intent(this, DetailsActivity.class);
         intent.putExtra("ID", id);
+        intent.putExtra("BITMAP", byteArray);
+        intent.putExtra("TITLE", title);
+        intent.putExtra("STARTDATE", startDate);
+        intent.putExtra("NAME", name);
+        intent.putExtra("BODY", body);
+        intent.putExtra("CITY", city);
+        intent.putExtra("STREET", street);
+        intent.putExtra("LATITUDE", latitude);
+        intent.putExtra("LONGITUDE", longitude);
+        intent.putExtra("GPS", gps);
+        intent.putExtra("MAPURL", mapUrlSrc);
+
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int id_code = Integer.parseInt(id);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, id_code,
+                intent, PendingIntent.FLAG_ONE_SHOT);
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.ic_launcher)
-                        .setContentTitle(msg)
+                        .setContentTitle(title)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText("Starts at " +clock))
                         .setContentText("Starts at " + id);

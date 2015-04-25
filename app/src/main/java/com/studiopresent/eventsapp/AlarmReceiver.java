@@ -6,9 +6,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.util.Calendar;
 
 /**
@@ -25,7 +27,19 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Intent service = new Intent(context, SchedulingService.class);
         // Forward to the notification
+        service.putExtra("bitmap", intent.getByteArrayExtra("bitmap"));
         service.putExtra("title", intent.getStringExtra("title"));
+        service.putExtra("startDate", intent.getStringExtra("startDate"));
+        service.putExtra("endDate", intent.getStringExtra("endDate"));
+        service.putExtra("name", intent.getStringExtra("name"));
+        service.putExtra("body", intent.getStringExtra("body"));
+        service.putExtra("city", intent.getStringExtra("city"));
+        service.putExtra("street", intent.getStringExtra("street"));
+        service.putExtra("latitude", intent.getStringExtra("latitude"));
+        service.putExtra("longitude", intent.getStringExtra("longitude"));
+        service.putExtra("gps", intent.getStringExtra("gps"));
+        service.putExtra("mapUrlSrc", intent.getStringExtra("mapUrlSrc"));
+
         service.putExtra("id", intent.getStringExtra("id"));
         service.putExtra("clock", intent.getStringExtra("clock"));
 
@@ -51,7 +65,28 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmReceiver.class);
         // Send some data to onReceive first then to the notification
+
+        // main image bitmap compress byte array
+        Bitmap bitmap = eventInfo.imageBitmap;
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+        intent.putExtra("bitmap", byteArray);
+
+        // title, start date, end date, etc.
         intent.putExtra("title", eventInfo.title);
+        intent.putExtra("startDate", eventInfo.startDate);
+        intent.putExtra("endDate", eventInfo.endDate);
+        intent.putExtra("name", eventInfo.name);
+        intent.putExtra("body", eventInfo.body);
+        intent.putExtra("city", eventInfo.city);
+        intent.putExtra("street", eventInfo.street);
+        intent.putExtra("latitude", eventInfo.latitude);
+        intent.putExtra("longitude", eventInfo.longitude);
+        String GPS = eventInfo.latitude + ", " + eventInfo.longitude;
+        intent.putExtra("gps", GPS);
+        intent.putExtra("mapUrlSrc", eventInfo.mapURLSrc);
+
         intent.putExtra("id", String.valueOf(eventInfo.id));
         intent.putExtra("clock", eventInfo.dStartDate.hour + ":" + eventInfo.dStartDate.minute);
         alarmIntent = PendingIntent.getBroadcast(context, eventInfo.id, intent, 0);
