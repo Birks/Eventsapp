@@ -247,7 +247,10 @@ public class MainActivity extends ActionBarActivity {
         intent.putExtra("INDEX", Integer.toString(index));
 
         // Image intent
-        Bitmap bitmap = events.get(index).imageBitmap;
+        intent.putExtra("BITMAP", events.get(index).imageSrc);
+
+
+        /*Bitmap bitmap = events.get(index).imageBitmap;
         Log.v("bitmap", "bitmap created");
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         Log.v("bitmap", "stream created");
@@ -256,7 +259,7 @@ public class MainActivity extends ActionBarActivity {
         byte[] byteArray = stream.toByteArray();
         Log.v("bitmap", "byte array created");
         intent.putExtra("BITMAP", byteArray);
-        Log.v("bitmap", "BITMAP send with intent");
+        Log.v("bitmap", "BITMAP send with intent");*/
 
 
         intent.putExtra("TITLE", events.get(index).title);

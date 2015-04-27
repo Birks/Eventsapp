@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,8 +112,8 @@ public class JSONPuller {
                     Log.v("mapURL", ei.mapURLSrc);
                     // When network available then download from server and save into file
                     ei.imageBitmap = Picasso.with(context).load(gObj.nodes[i].node.imageHdpi.src).get();
-                    ei.mapBitmap = Picasso.with(context).load(mapStr).get();
 
+                    ei.mapBitmap = Picasso.with(context).load(mapStr).get();
 
                     // Static Image save
                     File fileStaticMap = new File(context.getFilesDir().getAbsolutePath() + "/picmap_" + ei.id + ".jpg");
@@ -156,6 +157,12 @@ public class JSONPuller {
                     }
                 };
 
+
+                AlarmReceiver mAlarm = new AlarmReceiver();
+                mAlarm.setAlarm(context, ei);
+
+
+
                 // Check date update
                 if (!(oldEvents == null)) {
                     Log.v("Updatedate old name", oldEvents.get(i).name);
@@ -163,13 +170,18 @@ public class JSONPuller {
 
                     if (!oldEvents.get(i).updatedDate.equals(ei.updatedDate)) {
                         Log.v("Dateupdate", "Update found!");
+                        mAlarm.cancelAlarm(context);
+                        Log.v("Dateupdate", "clock: " + ei.startDate);
+                        mAlarm = null;
+                        mAlarm = new AlarmReceiver();
+                        mAlarm.setAlarm(context, ei);
                     } else {
                         Log.v("Dateupdate", "No update found!");
                     }
                 }
 
                 // Create new Alarm when downloading JSON
-                new AlarmReceiver().setAlarm(context, ei);
+//                new AlarmReceiver().setAlarm(context, ei);
 
                 // Add the object to the event array
                 events.add(ei);
@@ -266,7 +278,7 @@ public class JSONPuller {
             if (netInfo != null && netInfo.isConnected()) {
 
                 //Network is available but check if we can get access from the network.
-                URL url = new URL("http://193.105.163.234/");
+                URL url = new URL("http://google.com");
                 HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
                 urlc.setRequestProperty("Connection", "close");
                 urlc.setConnectTimeout(2000); // Timeout 2 seconds.

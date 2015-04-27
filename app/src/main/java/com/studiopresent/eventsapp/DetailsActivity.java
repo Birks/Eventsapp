@@ -69,14 +69,16 @@ public class DetailsActivity extends ActionBarActivity {
         textView.setText(message);
 
         // IMAGE
-        byte[] byteArray = getIntent().getByteArrayExtra("BITMAP");
-        Log.v("bitmap", "receive BITMAP intent");
-        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-        Log.v("bitmap", "bitmap factory");
+        String main_img = getIntent().getStringExtra("BITMAP");
         final ImageView imageView = (ImageView) findViewById(R.id.det_image);
-        Log.v("bitmap", "imageview initialized");
-        imageView.setImageBitmap(bitmap);
-        Log.v("bitmap", "bitmap added imageview");
+        Picasso.with(this).load(main_img).into(imageView);
+
+        /*Log.v("bitmap", "receive BITMAP intent");
+        Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);*/
+        //Log.v("bitmap", "bitmap factory");
+
+        //Log.v("bitmap", "imageview initialized");
+        //Log.v("bitmap", "bitmap added imageview");
 
         // NAME(Korzo)
         message = intent.getStringExtra("NAME");
@@ -136,6 +138,17 @@ public class DetailsActivity extends ActionBarActivity {
         intent.putExtras(b);
         startActivity(intent);
     }
+
+
+    // Back Pressed to main activity
+    /*@Override
+    public void onBackPressed() {
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtra("exit", true);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        super.onBackPressed();
+    }*/
 
     // This part is only required for a later use. Not functional yet.
     /*@Override
