@@ -19,4 +19,8 @@ public class DateObject {
     public String toString() {
         return year + month + day + hour + minute;
     }
+
+    public String getClockTime() {
+        return hour+":"+minute;
+    }
 }

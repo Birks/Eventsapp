@@ -57,7 +57,6 @@ public class JSONPuller {
         this.context = context;
         this.fileIOManager = new FileSaveMethods(ma);
         events = new ArrayList<>();
-        // oldEvents = new ArrayList<>();
     }
 
     public List<EventInfo> getEvents() {
@@ -158,9 +157,8 @@ public class JSONPuller {
                 };
 
 
-                AlarmReceiver mAlarm = new AlarmReceiver();
-                mAlarm.setAlarm(context, ei);
-
+                // Create new Alarm when downloading JSON
+                new AlarmReceiver().setAlarm(context,ei);
 
 
                 // Check date update
@@ -170,18 +168,12 @@ public class JSONPuller {
 
                     if (!oldEvents.get(i).updatedDate.equals(ei.updatedDate)) {
                         Log.v("Dateupdate", "Update found!");
-                        mAlarm.cancelAlarm(context);
                         Log.v("Dateupdate", "clock: " + ei.startDate);
-                        mAlarm = null;
-                        mAlarm = new AlarmReceiver();
-                        mAlarm.setAlarm(context, ei);
                     } else {
                         Log.v("Dateupdate", "No update found!");
                     }
                 }
 
-                // Create new Alarm when downloading JSON
-//                new AlarmReceiver().setAlarm(context, ei);
 
                 // Add the object to the event array
                 events.add(ei);
@@ -221,7 +213,6 @@ public class JSONPuller {
                 while (parsingComplete) ;
                 Log.v("Updatedate", "Old Parsing completed");
                 oldEvents = new ArrayList<>(events);
-                //oldEvents = events;
                 events.clear();
             }
 
@@ -268,9 +259,6 @@ public class JSONPuller {
 
     // Checks whether the connection is available to the internet
     public static boolean isNetworkAvailable(Context context) {
-        // return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
-
-
         try {
             ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo netInfo = cm.getActiveNetworkInfo();
