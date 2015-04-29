@@ -53,7 +53,7 @@ public class MainActivity extends ActionBarActivity {
         if (!fileManager.fileExists("json_string") && !JSONPuller.isNetworkAvailable(this)) {
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
             alertDialog.setTitle("Error");
-            alertDialog.setMessage("No internet connection");
+            alertDialog.setMessage("Can't reach the server");
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
@@ -162,7 +162,7 @@ public class MainActivity extends ActionBarActivity {
                     else {
                         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                         alertDialog.setTitle("Error");
-                        alertDialog.setMessage("No internet connection");
+                        alertDialog.setMessage("Can't reach the server");
                         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {

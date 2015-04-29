@@ -169,6 +169,7 @@ public class JSONPuller {
                     if (!oldEvents.get(i).updatedDate.equals(ei.updatedDate)) {
                         Log.v("Dateupdate", "Update found!");
                         Log.v("Dateupdate", "clock: " + ei.startDate);
+                        sendNotification(String.valueOf(ei.id),ei);
                     } else {
                         Log.v("Dateupdate", "No update found!");
                     }
@@ -257,6 +258,56 @@ public class JSONPuller {
         return s.hasNext() ? s.next() : "";
     }
 
+    public void sendNotification(String id, EventInfo ei) {
+        NotificationManager mNotificationManager = (NotificationManager)
+                context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        int id_code = Integer.parseInt(id);
+
+        // Read data from file
+
+        Intent intent = new Intent(context, DetailsActivity.class);
+        intent.putExtra("ID", id);
+        intent.putExtra("BITMAP", ei.imageSrc);
+        intent.putExtra("TITLE", ei.title);
+        intent.putExtra("STARTDATE", ei.startDate);
+        intent.putExtra("NAME", ei.name);
+        intent.putExtra("BODY", ei.body);
+        intent.putExtra("CITY", ei.city);
+        intent.putExtra("STREET", ei.street);
+        intent.putExtra("LATITUDE", ei.latitude);
+        intent.putExtra("LONGITUDE", ei.longitude);
+        intent.putExtra("GPS", ei.latitude + ", " + ei.longitude);
+        intent.putExtra("MAPURL", ei.mapURLSrc);
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(context, id_code,
+                intent, PendingIntent.FLAG_ONE_SHOT);
+
+        String notiText="Event updated, starts at " + ei.dStartDate.getClockTime();
+
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setContentTitle(ei.title)
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(notiText))
+                        .setContentText(notiText);
+
+        mBuilder.setAutoCancel(true);
+        mBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+
+
+        // Set a sound effect to the notification
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        mBuilder.setSound(alarmSound);
+
+        mBuilder.setContentIntent(contentIntent);
+        mNotificationManager.notify(Integer.parseInt(id), mBuilder.build());
+    }
+
     // Checks whether the connection is available to the internet
     public static boolean isNetworkAvailable(Context context) {
         try {
@@ -266,14 +317,14 @@ public class JSONPuller {
             if (netInfo != null && netInfo.isConnected()) {
 
                 //Network is available but check if we can get access from the network.
-                URL url = new URL("http://google.com");
+                URL url = new URL("http://217.65.100.93"); // development.studiopresent.info
                 HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
                 urlc.setRequestProperty("Connection", "close");
-                urlc.setConnectTimeout(2000); // Timeout 2 seconds.
+                urlc.setConnectTimeout(5000); // Timeout 2 seconds.
                 try {
                     urlc.connect();
                 } catch (Exception e) {
-                    Log.v("FetchJSON", "Error, no internet avalible or server is down.");
+                    Log.v("FetchJSON", "Error, no internet available or server is down.");
                     e.printStackTrace();
                 }
 
