@@ -96,6 +96,7 @@ public class JSONPuller {
                 ei.longitude = gObj.nodes[i].node.longitude;
 
                 ei.id = i;
+                ei.nid = Integer.parseInt(gObj.nodes[i].node.nid);
 
                 ei.imageSrc = gObj.nodes[i].node.imageHdpi.src;
 
@@ -158,22 +159,22 @@ public class JSONPuller {
 
 
                 // Create new Alarm when downloading JSON
-                new AlarmReceiver().setAlarm(context,ei);
+//                new AlarmReceiver().setAlarm(context,ei);
 
 
-                // Check date update
-                if (!(oldEvents == null)) {
-                    Log.v("Updatedate old name", oldEvents.get(i).name);
-                    Log.v("Updatedate new name", ei.name);
-
-                    if (!oldEvents.get(i).updatedDate.equals(ei.updatedDate)) {
-                        Log.v("Dateupdate", "Update found!");
-                        Log.v("Dateupdate", "clock: " + ei.startDate);
-                        sendNotification(String.valueOf(ei.id),ei);
-                    } else {
-                        Log.v("Dateupdate", "No update found!");
-                    }
-                }
+//                // Check date update
+//                if (!(oldEvents == null)) {
+//                    Log.v("Updatedate old name", oldEvents.get(i).name);
+//                    Log.v("Updatedate new name", ei.name);
+//
+//                    if (!oldEvents.get(i).updatedDate.equals(ei.updatedDate)) {
+//                        Log.v("Dateupdate", "Update found!");
+//                        Log.v("Dateupdate", "clock: " + ei.startDate);
+//                        sendNotification(String.valueOf(ei.id),ei);
+//                    } else {
+//                        Log.v("Dateupdate", "No update found!");
+//                    }
+//                }
 
 
                 // Add the object to the event array

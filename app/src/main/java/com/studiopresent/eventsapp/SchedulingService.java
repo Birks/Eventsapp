@@ -15,7 +15,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.studiopresent.eventsapp.gson.EventsJson;
 
+import org.json.JSONObject;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This {@code IntentService} does the app's actual work.
@@ -107,35 +111,50 @@ public class SchedulingService extends IntentService {
     public void readJSON(int id) {
         FileSaveMethods fileSaveMethods = new FileSaveMethods(this);
 
+        Log.v("Alarm", "Alarm id in readJSON: " + id);
         // GSON initalize
+        List<EventInfo> events;
+        events= new ArrayList<>();
         Gson gson = new GsonBuilder().create();
         EventsJson gObj = gson.fromJson(fileSaveMethods.readFromFile("json_string"), EventsJson.class);
-        ei = new EventInfo();
 
-        ei.title = gObj.nodes[id].node.title;
+        events.clear();
 
-        ei.dStartDate = CalendarMaker.generateFromString(gObj.nodes[id].node.startDate);
-        ei.startDate = ei.dStartDate.getSerbianDateFormat();
+        for (int i = 0; i < gObj.nodes.length; i++) {
 
-        ei.updatedDate = gObj.nodes[id].node.updatedDate;
+            // JSON Data main part
+            EventInfo ei = new EventInfo();
 
-        ei.endDate = gObj.nodes[id].node.endDate;
-        ei.body = gObj.nodes[id].node.body;
-        ei.name = gObj.nodes[id].node.name;
+            ei.title = gObj.nodes[i].node.title;
 
-        ei.city = gObj.nodes[id].node.city;
-        ei.street = gObj.nodes[id].node.street;
-        ei.latitude = gObj.nodes[id].node.latitude;
-        ei.longitude = gObj.nodes[id].node.longitude;
+            ei.dStartDate = CalendarMaker.generateFromString(gObj.nodes[i].node.startDate);
+            ei.startDate = ei.dStartDate.getSerbianDateFormat();
 
-        ei.id = id;
+            ei.updatedDate = gObj.nodes[i].node.updatedDate;
 
-        ei.imageSrc = gObj.nodes[id].node.imageHdpi.src;
+            ei.endDate = gObj.nodes[i].node.endDate;
+            ei.body = gObj.nodes[i].node.body;
+            ei.name = gObj.nodes[i].node.name;
+
+            ei.city = gObj.nodes[i].node.city;
+            ei.street = gObj.nodes[i].node.street;
+            ei.latitude = gObj.nodes[i].node.latitude;
+            ei.longitude = gObj.nodes[i].node.longitude;
+
+            ei.id = i;
+
+            ei.imageSrc = gObj.nodes[i].node.imageHdpi.src;
 
 
-        ei.imageSrc = String.valueOf(Uri.fromFile(new File(getBaseContext().getFilesDir().getAbsolutePath() + "/pic_" + ei.id + ".jpg")));
-        ei.mapURLSrc = String.valueOf(Uri.fromFile(new File(getBaseContext().getFilesDir().getAbsolutePath() + "/picmap_" + ei.id + ".jpg")));
+            ei.imageSrc = String.valueOf(Uri.fromFile(new File(getBaseContext().getFilesDir().getAbsolutePath() + "/pic_" + ei.id + ".jpg")));
+            ei.mapURLSrc = String.valueOf(Uri.fromFile(new File(getBaseContext().getFilesDir().getAbsolutePath() + "/picmap_" + ei.id + ".jpg")));
 
+            events.add(ei);
+        }
+
+        List<EventInfo> orderedEvents = CalendarMaker.orderEvents(events);
+
+        this.ei=orderedEvents.get(id);
         parsingCompleted = false;
 
     }

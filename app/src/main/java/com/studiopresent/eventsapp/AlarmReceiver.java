@@ -64,13 +64,13 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
         calendar.add(Calendar.HOUR, -1);
         calendar.set(Calendar.MINUTE, Integer.parseInt(eventInfo.dStartDate.minute));
 
-        Log.v("Alarm", "Calendar: " + calendar.getTime());
+        //Log.v("Alarm", "Calendar: " + calendar.getTime());
 
 
         // Set the alarm to fire at approximately 8:30 a.m., according to the device's clock
         // Check does the event older than the current time
         if (calendar.getTimeInMillis() > Calendar.getInstance().getTimeInMillis()) {
-            Log.v("Alarm", "Alarm set " + eventInfo.title + " Current time: " + Calendar.getInstance().getTime());
+            Log.v("Alarm", "Alarm set " + eventInfo.title + " id: " + eventInfo.id);
             alarmMgr.set(AlarmManager.RTC_WAKEUP,
                     calendar.getTimeInMillis(), alarmIntent);
         }

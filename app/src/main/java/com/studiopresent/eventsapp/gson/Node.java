@@ -5,6 +5,7 @@ package com.studiopresent.eventsapp.gson;
  * Created by Tam�s on 4/16/2015.
  */
 public class Node {
+    public String nid;
     public String title;
     public String startDate;
     public String endDate;

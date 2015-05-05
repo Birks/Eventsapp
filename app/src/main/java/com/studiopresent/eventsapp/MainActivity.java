@@ -1,6 +1,9 @@
 package com.studiopresent.eventsapp;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -23,8 +26,11 @@ public class MainActivity extends ActionBarActivity {
 
     JSONPuller obj;
     List<EventInfo> events;
+    List<EventInfo> unorderedEvents;
     SwipeRefreshLayout mSwipeRefreshLayout;
     FileSaveMethods fileManager;
+
+    boolean resetComplete = true;
 
     //A ProgressDialog object
     //private ProgressDialog progressDialog;
@@ -114,10 +120,11 @@ public class MainActivity extends ActionBarActivity {
 
                 // Getting the List<EventInfo> array
                 events= obj.getEvents();
+                unorderedEvents= obj.getEvents();
                 onNewIntent(getIntent());
                 events = CalendarMaker.orderEvents(obj.getEvents());
                 //events=CalendarMaker.orderEvents(events);
-
+                createAlarm();
                 // This ends the spinner
                 //publishProgress(100);
             }
@@ -184,7 +191,9 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onPreExecute() {
             // Starting new JSON pulling
-            //obj.events.clear();
+            resetAllAlarm();
+            while (resetComplete);
+
             obj = new JSONPuller(MainActivity.this, getBaseContext());
             obj.fetchJSON();
 
@@ -209,9 +218,11 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Void result) {
             events = CalendarMaker.orderEvents(obj.getEvents());
+            createAlarm();
             connectWithRecycleVIew();
-            // Finish the refreshing spinner
+//            // Finish the refreshing spinner
             mSwipeRefreshLayout.setRefreshing(false);
+
 
         }
     }
@@ -280,6 +291,24 @@ public class MainActivity extends ActionBarActivity {
         startActivity(intent);
     }
 
+    public void createAlarm() {
+        for (int i =0; i<events.size(); i++) {
+            Log.v("Alarm", "Trying to create alarm");
+            AlarmReceiver ar = new AlarmReceiver();
+            ar.setAlarm(this, events.get(i));
+        }
+    }
+
+    public void resetAllAlarm() {
+        for (int i = 0; i<events.size() ; i++) {
+            Log.v("Alarm", "Trying to cancel alarm " + i);
+            AlarmReceiver ar = new AlarmReceiver();
+            ar.setAlarm(this, events.get(i));
+            ar.cancelAlarm(this);
+        }
+        resetComplete = false;
+
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
