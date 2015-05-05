@@ -196,6 +196,7 @@ public class JSONPuller {
         if (!oldevents) {
             if (!(oldEvents == null)) {
                 new CheckUpdateTask().execute();
+                new CheckDeleteTask().execute();
             }
         }
     }
@@ -265,7 +266,7 @@ public class JSONPuller {
         return s.hasNext() ? s.next() : "";
     }
 
-    public void sendNotification(String id, EventInfo ei) {
+    public void sendNotification(String id, EventInfo ei, boolean isUpdate) {
         NotificationManager mNotificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -289,11 +290,20 @@ public class JSONPuller {
 
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(context, id_code,
-                intent, PendingIntent.FLAG_ONE_SHOT);
+        PendingIntent contentIntent;
 
-        String notiText = "Event updated, starts at " + ei.dStartDate.getClockTime();
 
+        String notiText;
+        if (isUpdate) {
+            notiText = "Event updated, starts at " + ei.dStartDate.getClockTime();
+            contentIntent = PendingIntent.getActivity(context, id_code,
+                    intent, PendingIntent.FLAG_ONE_SHOT);
+
+        } else {
+            notiText = "Event has been canceled";
+            contentIntent = PendingIntent.getActivity(context, id_code,
+                    intent, PendingIntent.FLAG_NO_CREATE);
+        }
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
@@ -357,15 +367,17 @@ public class JSONPuller {
         protected Void doInBackground(Void... params) {
             for (EventInfo olditem : oldEvents) {
 //                Log.v("UpdateCheck", "Olditem: " + String.valueOf(olditem.nid));
+
                 for (EventInfo newitem : events) {
 //                    Log.v("UpdateCheck", "Newitem: " + String.valueOf(newitem.nid));
+
                     if (olditem.nid == newitem.nid) {
 //                        Log.v("UpdateCheck", "Same item found " + olditem.nid + " " + olditem.title);
                         if (!olditem.updatedDate.equals(newitem.updatedDate)) {
                             olditem.updatedDate = newitem.updatedDate;
                             Log.v("UpdateCheck", "Update found!");
                             Log.v("UpdateCheck", "clock: " + newitem.startDate);
-                            sendNotification(String.valueOf(newitem.id), newitem);
+                            sendNotification(String.valueOf(newitem.id), newitem, true);
                         } else {
                             Log.v("UpdateCheck", "No update found!");
                         }
@@ -374,6 +386,34 @@ public class JSONPuller {
             }
 
 
+            return null;
+        }
+
+    }
+
+    private class CheckDeleteTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            for (EventInfo olditem : oldEvents) {
+//                Log.v("DeleteCheck", "Olditem: " + String.valueOf(olditem.nid));
+                boolean hasMissing = true;
+
+                for (EventInfo newitem : events) {
+//                    Log.v("DeleteCheck", "Newitem: " + String.valueOf(newitem.nid));
+
+                    if (olditem.nid == newitem.nid) {
+//                        Log.v("DeleteCheck", "Same item found " + olditem.nid + " " + olditem.title);
+                        hasMissing = false;
+                    }
+                }
+
+                if (hasMissing) {
+                    Log.v("DeleteCheck", "Item missing: " + olditem.nid + " " + olditem.title);
+                    sendNotification(String.valueOf(olditem.id), olditem, false);
+                }
+            }
             return null;
         }
 
