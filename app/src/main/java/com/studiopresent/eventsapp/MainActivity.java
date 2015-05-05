@@ -13,7 +13,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.WindowManager;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class MainActivity extends ActionBarActivity {
     List<EventInfo> unorderedEvents;
     SwipeRefreshLayout mSwipeRefreshLayout;
     FileSaveMethods fileManager;
+    ProgressBar progressbar;
 
     boolean resetComplete = true;
 
@@ -77,6 +79,8 @@ public class MainActivity extends ActionBarActivity {
         // Before running code in the separate thread
         @Override
         protected void onPreExecute() {
+            progressbar = (ProgressBar)findViewById(R.id.progressBar);
+            progressbar.setVisibility(View.VISIBLE);
 //            // Create a new progress dialog
 //            progressDialog = new ProgressDialog(MainActivity.this);
 //            // Set the progress dialog spinner progress bar
@@ -138,6 +142,7 @@ public class MainActivity extends ActionBarActivity {
         // after executing the code in the thread
         @Override
         protected void onPostExecute(Void result) {
+            progressbar.setVisibility(View.GONE);
             // close the progress dialog
             //progressDialog.dismiss();
 
