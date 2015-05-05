@@ -64,7 +64,7 @@ public class JSONPuller {
     }
 
     @SuppressLint("NewApi")
-    public void readAndParseJSON(String in) {
+    public void readAndParseJSON(String in, boolean oldevents) {
         try {
             Log.v("GSON", "Parsing started...");
 
@@ -192,6 +192,12 @@ public class JSONPuller {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if (!oldevents) {
+            if (!(oldEvents == null)) {
+                new CheckUpdateTask().execute();
+            }
+        }
     }
 
     // This part connects and downloads the JSON data
@@ -206,7 +212,7 @@ public class JSONPuller {
 
                     @Override
                     public void run() {
-                        readAndParseJSON(fileIOManager.readFromFile("json_string"));
+                        readAndParseJSON(fileIOManager.readFromFile("json_string"), true);
                     }
                 });
 
@@ -234,7 +240,7 @@ public class JSONPuller {
                         conn.connect();
                         InputStream stream = conn.getInputStream();
                         String data = convertStreamToString(stream);
-                        readAndParseJSON(data);
+                        readAndParseJSON(data, false);
                         stream.close();
 
                     } catch (Exception e) {
@@ -250,7 +256,7 @@ public class JSONPuller {
             // no network
             Log.v("FetchJSON", "No network available");
             hasInternetConnection = false;
-            readAndParseJSON(fileIOManager.readFromFile("json_string"));
+            readAndParseJSON(fileIOManager.readFromFile("json_string"), false);
         }
     }
 
@@ -286,7 +292,7 @@ public class JSONPuller {
         PendingIntent contentIntent = PendingIntent.getActivity(context, id_code,
                 intent, PendingIntent.FLAG_ONE_SHOT);
 
-        String notiText="Event updated, starts at " + ei.dStartDate.getClockTime();
+        String notiText = "Event updated, starts at " + ei.dStartDate.getClockTime();
 
 
         NotificationCompat.Builder mBuilder =
@@ -342,6 +348,34 @@ public class JSONPuller {
             e.printStackTrace();
         }
         return false;
+
+    }
+
+    private class CheckUpdateTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            for (EventInfo olditem : oldEvents) {
+//                Log.v("UpdateCheck", "Olditem: " + String.valueOf(olditem.nid));
+                for (EventInfo newitem : events) {
+//                    Log.v("UpdateCheck", "Newitem: " + String.valueOf(newitem.nid));
+                    if (olditem.nid == newitem.nid) {
+//                        Log.v("UpdateCheck", "Same item found " + olditem.nid + " " + olditem.title);
+                        if (!olditem.updatedDate.equals(newitem.updatedDate)) {
+                            olditem.updatedDate = newitem.updatedDate;
+                            Log.v("UpdateCheck", "Update found!");
+                            Log.v("UpdateCheck", "clock: " + newitem.startDate);
+                            sendNotification(String.valueOf(newitem.id), newitem);
+                        } else {
+                            Log.v("UpdateCheck", "No update found!");
+                        }
+                    }
+                }
+            }
+
+
+            return null;
+        }
 
     }
 
