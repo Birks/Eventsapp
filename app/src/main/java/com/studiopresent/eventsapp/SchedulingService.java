@@ -85,12 +85,12 @@ public class SchedulingService extends IntentService {
         PendingIntent contentIntent = PendingIntent.getActivity(this, id_code,
                 intent, PendingIntent.FLAG_ONE_SHOT);
 
-        String notiText="Starts at " + ei.dStartDate.getClockTime();
+        String notiText = "Starts at " + ei.dStartDate.getClockTime();
 
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setSmallIcon(R.drawable.events_white)
                         .setContentTitle(ei.title)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(notiText))
@@ -114,7 +114,7 @@ public class SchedulingService extends IntentService {
         Log.v("Alarm", "Alarm id in readJSON: " + id);
         // GSON initalize
         List<EventInfo> events;
-        events= new ArrayList<>();
+        events = new ArrayList<>();
         Gson gson = new GsonBuilder().create();
         EventsJson gObj = gson.fromJson(fileSaveMethods.readFromFile("json_string"), EventsJson.class);
 
@@ -154,7 +154,7 @@ public class SchedulingService extends IntentService {
 
         List<EventInfo> orderedEvents = CalendarMaker.orderEvents(events);
 
-        this.ei=orderedEvents.get(id);
+        this.ei = orderedEvents.get(id);
         parsingCompleted = false;
 
     }

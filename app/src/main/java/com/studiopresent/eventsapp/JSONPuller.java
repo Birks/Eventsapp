@@ -307,7 +307,7 @@ public class JSONPuller {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_launcher)
+                        .setSmallIcon(R.drawable.events_white)
                         .setContentTitle(ei.title)
                         .setStyle(new NotificationCompat.BigTextStyle()
                                 .bigText(notiText))
