@@ -1,12 +1,9 @@
 package com.studiopresent.eventsapp;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
+
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,10 +12,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.WindowManager;
 
-import java.io.ByteArrayOutputStream;
 import java.util.List;
 
 
@@ -183,6 +179,20 @@ public class MainActivity extends ActionBarActivity {
             });
 
         }
+
+    }
+
+    protected boolean enabled = true;
+
+    public void enable(boolean b) {
+        enabled = b;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(enabled)
+            return super.dispatchTouchEvent(ev);
+        return true;
     }
 
     // AsyncTask which needed for the SwipeRefresh
@@ -190,6 +200,7 @@ public class MainActivity extends ActionBarActivity {
         // Before running code in the separate thread
         @Override
         protected void onPreExecute() {
+            enable(false);
             // Starting new JSON pulling
             resetAllAlarm();
             while (resetComplete);
@@ -217,13 +228,13 @@ public class MainActivity extends ActionBarActivity {
         // after executing the code in the thread
         @Override
         protected void onPostExecute(Void result) {
+            enable(true);
+
             events = CalendarMaker.orderEvents(obj.getEvents());
             createAlarm();
             connectWithRecycleVIew();
 //            // Finish the refreshing spinner
             mSwipeRefreshLayout.setRefreshing(false);
-
-
         }
     }
 
@@ -320,7 +331,6 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     }
-
 
     /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {

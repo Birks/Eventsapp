@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Eventsapp</string>
+    <string name="app_name">Suboticapp</string>
     <string name="action_settings">Settings</string>
     <string name="temp_string">Lorem ipsum</string>
     <string name="title_activity_details"></string>
