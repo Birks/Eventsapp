@@ -113,7 +113,14 @@ public class JSONPuller {
                     // When network available then download from server and save into file
                     ei.imageBitmap = Picasso.with(context).load(gObj.nodes[i].node.imageHdpi.src).get();
 
-                    ei.mapBitmap = Picasso.with(context).load(mapStr).get();
+
+                    ei.mapBitmap= Picasso.with(context).load(R.drawable.ic_launcher).get();
+                    try {
+                    ei.mapBitmap = Picasso.with(context).load(mapStr).get();}
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
 
                     // Static Image save
                     File fileStaticMap = new File(context.getFilesDir().getAbsolutePath() + "/picmap_" + ei.id + ".jpg");
@@ -156,25 +163,6 @@ public class JSONPuller {
                         ma.openEvent(v.getId());
                     }
                 };
-
-
-                // Create new Alarm when downloading JSON
-//                new AlarmReceiver().setAlarm(context,ei);
-
-
-//                // Check date update
-//                if (!(oldEvents == null)) {
-//                    Log.v("Updatedate old name", oldEvents.get(i).name);
-//                    Log.v("Updatedate new name", ei.name);
-//
-//                    if (!oldEvents.get(i).updatedDate.equals(ei.updatedDate)) {
-//                        Log.v("Dateupdate", "Update found!");
-//                        Log.v("Dateupdate", "clock: " + ei.startDate);
-//                        sendNotification(String.valueOf(ei.id),ei);
-//                    } else {
-//                        Log.v("Dateupdate", "No update found!");
-//                    }
-//                }
 
 
                 // Add the object to the event array
@@ -337,12 +325,13 @@ public class JSONPuller {
                 URL url = new URL("http://217.65.100.93"); // development.studiopresent.info
                 HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
                 urlc.setRequestProperty("Connection", "close");
-                urlc.setConnectTimeout(5000); // Timeout 2 seconds.
+                urlc.setConnectTimeout(5000); // Timeout 5 seconds.
                 try {
                     urlc.connect();
                 } catch (Exception e) {
                     Log.v("FetchJSON", "Error, no internet available or server is down.");
                     e.printStackTrace();
+                    return false;
                 }
 
                 if (urlc.getResponseCode() == 200)  //Successful response.
