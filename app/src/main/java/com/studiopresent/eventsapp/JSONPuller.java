@@ -322,7 +322,7 @@ public class JSONPuller {
             if (netInfo != null && netInfo.isConnected()) {
 
                 //Network is available but check if we can get access from the network.
-                URL url = new URL("http://217.65.100.93"); // development.studiopresent.info
+                URL url = new URL("http://development.studiopresent.info/eventsapp/get-data/json"); // development.studiopresent.info
                 HttpURLConnection urlc = (HttpURLConnection) url.openConnection();
                 urlc.setRequestProperty("Connection", "close");
                 urlc.setConnectTimeout(5000); // Timeout 5 seconds.
@@ -334,6 +334,7 @@ public class JSONPuller {
                     return false;
                 }
 
+                Log.v("FetchJSON", "Response: " +urlc.getResponseCode());
                 if (urlc.getResponseCode() == 200)  //Successful response.
                 {
                     Log.v("FetchJSON", "Has internet");
