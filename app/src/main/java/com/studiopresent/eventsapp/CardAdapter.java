@@ -2,6 +2,7 @@ package com.studiopresent.eventsapp;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,8 +55,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
         EventInfo ei = eventsList.get(i);
 
         holder.vTitle.setText(ei.title);
+        //holder.vTitle.setShadowLayer(25, 0, 0, Color.BLACK);
         holder.vName.setText(ei.name);
+        //holder.vName.setShadowLayer(25, 0, 0, Color.BLACK);
         holder.vSTartDate.setText(ei.startDate);
+        //holder.vSTartDate.setShadowLayer(25, 0, 0, Color.BLACK);
         holder.rlayout.setId(ei.id);
         holder.rlayout.setOnClickListener(ei.onClickListener);
 
@@ -104,7 +108,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.EventCardHolde
             vTitle = (TextView) v.findViewById(R.id.txt_title);
             vSTartDate = (TextView) v.findViewById(R.id.txt_startDate);
             vName = (TextView) v.findViewById(R.id.txt_name);
-            vTint = (ImageView) v.findViewById(R.id.tint);
+//          vTint = (ImageView) v.findViewById(R.id.tint);
             vImage = (ImageView) v.findViewById(R.id.image);
             rlayout = (RelativeLayout) v.findViewById(R.id.card_rlayout);
             vProgress = v.findViewById(R.id.card_progressbar);

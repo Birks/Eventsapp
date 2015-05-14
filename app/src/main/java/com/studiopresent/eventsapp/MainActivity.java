@@ -57,6 +57,7 @@ public class MainActivity extends ActionBarActivity {
         if (!fileManager.fileExists("json_string") && !JSONPuller.isNetworkAvailable(this)) {
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
             alertDialog.setTitle("Error");
+            alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setMessage("Can't reach the server");
             alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                     new DialogInterface.OnClickListener() {
@@ -170,6 +171,7 @@ public class MainActivity extends ActionBarActivity {
                     else {
                         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                         alertDialog.setTitle("Error");
+                        alertDialog.setCanceledOnTouchOutside(false);
                         alertDialog.setMessage("Can't reach the server");
                         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
                                 new DialogInterface.OnClickListener() {

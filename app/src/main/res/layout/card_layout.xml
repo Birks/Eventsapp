@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="160dp"
     android:layout_gravity="top"
-    android:layout_marginBottom="2dp"
+    android:layout_marginBottom="1dp"
     card_view:cardCornerRadius="0dp"
     card_view:cardUseCompatPadding="false"
     card_view:contentPadding="-4dp">
@@ -22,26 +22,28 @@
 
             <ImageView
                 android:id="@+id/image"
-                android:alpha="0.8"
+                android:alpha="1"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop" />
 
-            <ImageView
-                android:id="@+id/tint"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:alpha="0.5"/>
+            <!--<ImageView-->
+                <!--android:id="@+id/tint"-->
+                <!--android:layout_width="fill_parent"-->
+                <!--android:layout_height="fill_parent"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:alpha="0.5"/>-->
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
             android:layout_alignParentRight="true"
             android:gravity="right"
+            android:background="@drawable/date_gradient"
             android:orientation="horizontal"
             android:paddingRight="8dp">
 
@@ -80,6 +82,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:paddingTop="8dp"
+            android:background="@drawable/location_gradient"
             android:orientation="vertical">
 
             <TextView
