@@ -25,6 +25,7 @@ import com.studiopresent.eventsapp.gson.EventsJson;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
@@ -45,6 +46,7 @@ public class JSONPuller {
     private Context context;
     private FileSaveMethods fileIOManager;
     private List<EventInfo> oldEvents;
+    private boolean isRefreshingTask = false;
     public static boolean hasInternetConnection = true;
 
     public volatile boolean parsingComplete = true;
@@ -174,7 +176,6 @@ public class JSONPuller {
             fileIOManager.saveToFile("json_string", in);
             Log.v("fileIOManager", "JSON saved to file");
             Log.v("fileIOManager", fileIOManager.readFromFile("json_string"));
-            parsingComplete = false;
 
 
         } catch (Exception e) {
@@ -182,38 +183,51 @@ public class JSONPuller {
         }
 
         if (!oldevents) {
+
+            if (isRefreshingTask) {
+                ma.onRefreshTaskComplete();
+            } else {
+                ma.onTaskComplete();
+            }
+
+
             if (!(oldEvents == null)) {
                 new CheckUpdateTask().execute();
                 new CheckDeleteTask().execute();
             }
+        } else {
+
+            finishOldEventsParse();
         }
     }
+
+
+    public void newFetchJSON(boolean isRefreshingTask) {
+        this.isRefreshingTask=isRefreshingTask;
+        // Fetching old JSON from file
+        if (fileIOManager.fileExists("json_string")) {
+            Thread thread = new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    readAndParseJSON(fileIOManager.readFromFile("json_string"), true);
+                }
+            });
+
+            thread.start();
+
+        } else  {
+            fetchJSON();
+        }
+
+    }
+
 
     // This part connects and downloads the JSON data
     public void fetchJSON() {
         if (isNetworkAvailable(context)) {
             // available network
             Log.v("FetchJSON", "Network available");
-
-            // Fetching old JSON from file
-            if (fileIOManager.fileExists("json_string")) {
-                Thread thread = new Thread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        readAndParseJSON(fileIOManager.readFromFile("json_string"), true);
-                    }
-                });
-
-                thread.start();
-
-                while (parsingComplete) ;
-                Log.v("Updatedate", "Old Parsing completed");
-                oldEvents = new ArrayList<>(events);
-                events.clear();
-            }
-
-
             parsingComplete = true;
             Thread thread = new Thread(new Runnable() {
                 @Override
@@ -231,6 +245,7 @@ public class JSONPuller {
                         String data = convertStreamToString(stream);
                         readAndParseJSON(data, false);
                         stream.close();
+                        conn.disconnect();
 
                     } catch (Exception e) {
                         Log.v("FetchJson", "Connection error");
@@ -343,6 +358,7 @@ public class JSONPuller {
                     Log.v("FetchJSON", "NO INTERNET");
                     return false;
                 }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -350,6 +366,15 @@ public class JSONPuller {
         return false;
 
     }
+
+    private void finishOldEventsParse() {
+                Log.v("Updatedate", "Old Parsing completed");
+                oldEvents = new ArrayList<>(events);
+                events.clear();
+
+                fetchJSON();
+    }
+
 
     private class CheckUpdateTask extends AsyncTask<Void, Void, Void> {
 

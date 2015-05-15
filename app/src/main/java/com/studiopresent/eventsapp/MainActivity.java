@@ -80,28 +80,9 @@ public class MainActivity extends ActionBarActivity {
         // Before running code in the separate thread
         @Override
         protected void onPreExecute() {
-            progressbar = (ProgressBar)findViewById(R.id.progressBar);
+            progressbar = (ProgressBar) findViewById(R.id.progressBar);
             progressbar.setVisibility(View.VISIBLE);
-//            // Create a new progress dialog
-//            progressDialog = new ProgressDialog(MainActivity.this);
-//            // Set the progress dialog spinner progress bar
-//            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//            // Set the dialog title to 'Loading...'
-//            progressDialog.setTitle("Loading...");
-//            // Set the dialog message to 'Loading application View, please wait...'
-//            progressDialog.setMessage("Loading application, please wait...");
-//            // This dialog can't be canceled by pressing the back key
-//            progressDialog.setCancelable(false);
-//            // This dialog isn't indeterminate
-//            progressDialog.setIndeterminate(false);
-//            // The maximum number of items is 100
-//            progressDialog.setMax(100);
-//            // Set the current progress to zero
-//            progressDialog.setProgress(0);
-//            // Display the progress dialog
-//            progressDialog.show();
 
-            // Splash screen variant
         }
 
         // The code to be executed in a background thread.
@@ -113,62 +94,37 @@ public class MainActivity extends ActionBarActivity {
             //Get the current thread's token
             synchronized (this) {
                 // Calling the JSON Pulling action
-                obj.fetchJSON();
-
-
-                // Delay until the parsing is completed
-                while (obj.parsingComplete) ;
-
-                // Getting the List<EventInfo> array
-                events= obj.getEvents();
-                unorderedEvents= obj.getEvents();
-                onNewIntent(getIntent());
-                events = CalendarMaker.orderEvents(obj.getEvents());
-                //events=CalendarMaker.orderEvents(events);
-                createAlarm();
-                // This ends the spinner
-                //publishProgress(100);
+                obj.newFetchJSON(false);
             }
 
             return null;
         }
+    }
 
-        // Update the progress
+    protected boolean enabled = true;
+
+    public void enable(boolean b) {
+        enabled = b;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (enabled)
+            return super.dispatchTouchEvent(ev);
+        return true;
+    }
+
+    // AsyncTask which needed for the SwipeRefresh
+    private class RefreshItems extends AsyncTask<Void, Integer, Void> {
+        // The code to be executed in a background thread.
         @Override
-        protected void onProgressUpdate(Integer... values) {
-            // set the current progress of the progress dialog
-            //progressDialog.setProgress(values[0]);
-        }
+        protected Void doInBackground(Void... params) {
 
-        // after executing the code in the thread
-        @Override
-        protected void onPostExecute(Void result) {
-            progressbar.setVisibility(View.GONE);
-            // close the progress dialog
-            //progressDialog.dismiss();
-
-            //onNewIntent(getIntent());
-
-            // The onCreate part.
-            setContentView(R.layout.activity_main);
-
-            // NOTE: everything from here was moved in the method connectWithRecycleVIew()
-            connectWithRecycleVIew();
-
-            // Must be here because in onCreate the app crashes
-            mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-            // This part is needed for the pull to refresh
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    // Refresh items
-                    Log.v("MainActivity", "Refreshing Items");
-                    // Calling the JSON Pulling action if the device is connected to the internet
-                    if (JSONPuller.isNetworkAvailable(MainActivity.this)) {
-                        new RefreshItems().execute();
-                    }
-                    // If not connected then show an Alertdialog
-                    else {
+            if (!JSONPuller.isNetworkAvailable(MainActivity.this)) {
+                // If not connected then show an Alertdialog
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
                         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                         alertDialog.setTitle("Error");
                         alertDialog.setCanceledOnTouchOutside(false);
@@ -182,67 +138,19 @@ public class MainActivity extends ActionBarActivity {
                         alertDialog.show();
                         mSwipeRefreshLayout.setRefreshing(false);
                     }
-                }
-            });
+                });
+            } else {
+                enable(false);
+                // Starting new JSON pulling
+                resetAllAlarm();
 
-        }
-
-    }
-
-    protected boolean enabled = true;
-
-    public void enable(boolean b) {
-        enabled = b;
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if(enabled)
-            return super.dispatchTouchEvent(ev);
-        return true;
-    }
-
-    // AsyncTask which needed for the SwipeRefresh
-    private class RefreshItems extends AsyncTask<Void, Integer, Void> {
-        // Before running code in the separate thread
-        @Override
-        protected void onPreExecute() {
-            enable(false);
-            // Starting new JSON pulling
-            resetAllAlarm();
-            while (resetComplete);
-
-            obj = new JSONPuller(MainActivity.this, getBaseContext());
-            obj.fetchJSON();
-
-            events.clear();
-        }
-
-        // The code to be executed in a background thread.
-        @Override
-        protected Void doInBackground(Void... params) {
-            //Get the current thread's token
-            synchronized (this) {
-                // Waiting for json donwload
-                while (obj.parsingComplete) ;
-                // This ends the spinner
-                publishProgress(100);
+                events.clear();
+                obj = new JSONPuller(MainActivity.this, getBaseContext());
+                obj.newFetchJSON(true);
             }
-
             return null;
         }
 
-        // after executing the code in the thread
-        @Override
-        protected void onPostExecute(Void result) {
-            enable(true);
-
-            events = CalendarMaker.orderEvents(obj.getEvents());
-            createAlarm();
-            connectWithRecycleVIew();
-//            // Finish the refreshing spinner
-            mSwipeRefreshLayout.setRefreshing(false);
-        }
     }
 
     // When swipe refresh and first run ends
@@ -278,19 +186,6 @@ public class MainActivity extends ActionBarActivity {
         // Image intent
         intent.putExtra("BITMAP", events.get(index).imageSrc);
 
-
-        /*Bitmap bitmap = events.get(index).imageBitmap;
-        Log.v("bitmap", "bitmap created");
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        Log.v("bitmap", "stream created");
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        Log.v("bitmap", "bitmap comppress format");
-        byte[] byteArray = stream.toByteArray();
-        Log.v("bitmap", "byte array created");
-        intent.putExtra("BITMAP", byteArray);
-        Log.v("bitmap", "BITMAP send with intent");*/
-
-
         intent.putExtra("TITLE", events.get(index).title);
         intent.putExtra("STARTDATE", events.get(index).startDate);
         intent.putExtra("NAME", events.get(index).name);
@@ -310,7 +205,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void createAlarm() {
-        for (int i =0; i<events.size(); i++) {
+        for (int i = 0; i < events.size(); i++) {
             Log.v("Alarm", "Trying to create alarm");
             AlarmReceiver ar = new AlarmReceiver();
             ar.setAlarm(this, events.get(i));
@@ -318,7 +213,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void resetAllAlarm() {
-        for (int i = 0; i<events.size() ; i++) {
+        for (int i = 0; i < events.size(); i++) {
             Log.v("Alarm", "Trying to cancel alarm " + i);
             AlarmReceiver ar = new AlarmReceiver();
             ar.setAlarm(this, events.get(i));
@@ -337,6 +232,74 @@ public class MainActivity extends ActionBarActivity {
                 openEvent(Integer.parseInt(extras.getString("ID")));
             }
         }
+    }
+
+
+    public void onTaskComplete() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                onParseComplete();
+
+            }
+        });
+
+    }
+
+    public void onRefreshTaskComplete() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                onRefreshParseComplete();
+
+            }
+        });
+    }
+
+    public void onRefreshParseComplete() {
+        Log.v("Startup", "onRefreshParseComplete");
+        enable(true);
+
+        events = CalendarMaker.orderEvents(obj.getEvents());
+        createAlarm();
+        connectWithRecycleVIew();
+        // Finish the refreshing spinner
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+
+    public void onParseComplete() {
+        Log.v("Startup", "onParseComplete");
+
+        // Getting the List<EventInfo> array
+        events = obj.getEvents();
+        unorderedEvents = obj.getEvents();
+        onNewIntent(getIntent());
+        events = CalendarMaker.orderEvents(obj.getEvents());
+        createAlarm();
+
+        progressbar.setVisibility(View.GONE);
+
+        // The onCreate part.
+        setContentView(R.layout.activity_main);
+
+        // NOTE: everything from here was moved in the method connectWithRecycleVIew()
+        connectWithRecycleVIew();
+
+        // Must be here because in onCreate the app crashes
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        // This part is needed for the pull to refresh
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh items
+                Log.v("MainActivity", "Refreshing Items");
+                // Calling the JSON Pulling action if the device is connected to the internet
+                new RefreshItems().execute();
+            }
+        });
+
+
     }
 
     /*@Override
