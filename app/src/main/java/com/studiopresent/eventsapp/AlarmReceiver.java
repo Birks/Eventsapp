@@ -26,6 +26,7 @@ public class AlarmReceiver extends WakefulBroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.v("Alarm","Alarmrreceiver onreceiver");
         Intent service = new Intent(context, SchedulingService.class);
         // Forward to the notification
         service.putExtra("id", intent.getStringExtra("id"));

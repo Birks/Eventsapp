@@ -300,6 +300,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        new CheckAlarm().setAlarm(getApplicationContext());
 
     }
 

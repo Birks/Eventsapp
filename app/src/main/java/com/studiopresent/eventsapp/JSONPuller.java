@@ -350,7 +350,7 @@ public class JSONPuller {
                 }
 
                 Log.v("FetchJSON", "Response: " +urlc.getResponseCode());
-                if (urlc.getResponseCode() == 200)  //Successful response.
+                if (urlc.getResponseCode() == 200 || urlc.getResponseCode() == 307)  //Successful response.
                 {
                     Log.v("FetchJSON", "Has internet");
                     return true;
