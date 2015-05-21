@@ -288,6 +288,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Must be here because in onCreate the app crashes
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.dark_green);
         // This part is needed for the pull to refresh
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
